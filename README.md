@@ -82,7 +82,7 @@ The game features an authentic, 100% self-contained procedural synthesizer using
 ## 📁 Project Structure
 
 ```
-Mario Winter/
+classic-mario-winter/
 │
 ├── index.html           # Main game markup, CRT filter overlay, touch D-pad
 ├── css/
