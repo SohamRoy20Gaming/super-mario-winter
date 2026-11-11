@@ -235,7 +235,7 @@ class Level {
     }
   }
 
-  render(ctx, cameraX, viewportW, viewportH) {
+  render(ctx, cameraX, viewportW, viewportH, coinFrame = 0) {
     // Draw Scenery (Pine trees & Snowmen behind tiles)
     for (const s of this.scenery) {
       const screenX = Math.floor(s.x - cameraX);
@@ -312,8 +312,7 @@ class Level {
           const sprite = Sprites.get('block_brick');
           if (sprite) ctx.drawImage(sprite, screenX, screenY);
         } else if (tile.renderType === 'loose_coin') {
-          const frame = Math.floor(Date.now() / 150) % 4;
-          const sprite = Sprites.get(`coin_${frame}`);
+          const sprite = Sprites.get(`coin_${coinFrame}`);
           if (sprite) ctx.drawImage(sprite, screenX, screenY);
         } else if (tile.renderType === 'pipe') {
           if (tile.pipePart === '[') {

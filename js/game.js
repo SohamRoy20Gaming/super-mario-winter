@@ -55,12 +55,17 @@ class Engine {
       shootPressed: false
     };
 
-    // Cutscene helpers
+    // Cutscene helpers & animation tick
     this.flagFireworksCount = 0;
     this.fireworkTimer = 0;
+    this.animTick = 0;
 
     this.setupInputs();
     this.lastTime = performance.now();
+  }
+
+  get coinFrame() {
+    return Math.floor(this.animTick / 9) % 4;
   }
 
   start() {
@@ -376,6 +381,8 @@ class Engine {
       return;
     }
 
+    this.animTick++;
+
     // Timer countdown
     this.timeCounter++;
     if (this.timeCounter >= 60) {
@@ -610,7 +617,7 @@ class Engine {
 
     // 2. Draw Level Tiles & Scenery
     if (this.level) {
-      this.level.render(this.ctx, this.cameraX, this.VIEW_WIDTH, this.VIEW_HEIGHT);
+      this.level.render(this.ctx, this.cameraX, this.VIEW_WIDTH, this.VIEW_HEIGHT, this.coinFrame);
     }
 
     // 3. Draw Items
@@ -708,8 +715,8 @@ class Engine {
     const scoreStr = this.score.toString().padStart(6, '0');
     this.ctx.fillText(scoreStr, 24, 28);
 
-    // Coins with spinning coin icon
-    const frame = Math.floor(Date.now() / 150) % 4;
+    // Coins with spinning coin icon (freezes when paused)
+    const frame = this.coinFrame;
     const coinSprite = Sprites.get(`coin_${frame}`);
     if (coinSprite) {
       this.ctx.drawImage(coinSprite, 84, 19, 10, 10);
