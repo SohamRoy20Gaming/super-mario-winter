@@ -507,3 +507,32 @@ body {
 .modal-close:hover {
   background: #3b82f6;
 }
+
+/* Corner Creator Credit Badge */
+.creator-badge {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  z-index: 50;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #e2e8f0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  letter-spacing: 0.3px;
+}
+
+@media (max-width: 900px) {
+  .creator-badge {
+    position: static;
+    margin-top: 12px;
+    text-align: center;
+  }
+}
