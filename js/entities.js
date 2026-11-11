@@ -392,6 +392,15 @@ class Mario {
     Physics.moveHorizontal(this, level);
     Physics.moveVertical(this, level);
 
+    // Clamp player within level horizontal boundaries
+    if (this.x < 0) {
+      this.x = 0;
+      if (this.vx < 0) this.vx = 0;
+    } else if (this.x + this.w > level.pixelWidth) {
+      this.x = level.pixelWidth - this.w;
+      if (this.vx > 0) this.vx = 0;
+    }
+
     // Fall in pit death
     if (this.y > level.heightInTiles * 16 + 40) {
       this.die();

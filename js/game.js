@@ -398,13 +398,19 @@ class Engine {
       return;
     }
 
-    // Camera following Mario smoothly
-    if (this.player.x - this.cameraX > this.VIEW_WIDTH * 0.45) {
-      this.cameraX = this.player.x - this.VIEW_WIDTH * 0.45;
+    // Camera following Mario smoothly (both left and right)
+    const rightThreshold = this.VIEW_WIDTH * 0.50;
+    const leftThreshold = this.VIEW_WIDTH * 0.30;
+
+    if (this.player.x - this.cameraX > rightThreshold) {
+      this.cameraX = this.player.x - rightThreshold;
+    } else if (this.player.x - this.cameraX < leftThreshold) {
+      this.cameraX = this.player.x - leftThreshold;
     }
+
     // Clamp camera within level bounds
     if (this.cameraX < 0) this.cameraX = 0;
-    const maxCameraX = this.level.pixelWidth - this.VIEW_WIDTH;
+    const maxCameraX = Math.max(0, this.level.pixelWidth - this.VIEW_WIDTH);
     if (this.cameraX > maxCameraX) this.cameraX = maxCameraX;
 
     // Check Flagpole Collision (Level Win)
@@ -649,10 +655,10 @@ class Engine {
     // Parallax Snowy Mountain Peaks
     if (this.level.theme === 'overworld') {
       this.ctx.save();
-      const mountainOffset = -this.cameraX * 0.2;
+      const mountainOffset = -((this.cameraX * 0.2) % 140);
       this.ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
 
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 4; i++) {
         const mx = mountainOffset + i * 140;
         this.ctx.beginPath();
         this.ctx.moveTo(mx, 200);
