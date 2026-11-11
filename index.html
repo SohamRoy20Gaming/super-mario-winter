@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Super Mario Winter - The Holiday Adventure</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❄️</text></svg>">
+</head>
+<body>
+
+  <!-- Ambient background snow canvas -->
+  <canvas id="ambient-snow"></canvas>
+
+  <div class="game-container">
+    <!-- Arcade Cabinet Bezel -->
+    <div class="cabinet-bezel">
+      
+      <!-- Top Marquee Header -->
+      <div class="bezel-header">
+        <div class="brand-badge">
+          <span class="brand-icon">❄️</span>
+          <div>
+            <div class="brand-title">SUPER MARIO WINTER</div>
+            <div class="brand-subtitle">Holiday Edition</div>
+          </div>
+        </div>
+
+        <div class="cabinet-controls">
+          <button id="btn-mute" class="btn-icon" title="Toggle Sound (M)">🔊 SOUND ON</button>
+          <button id="btn-crt" class="btn-icon" title="Toggle CRT Scanlines">📺 CRT FX</button>
+          <button id="btn-help" class="btn-icon" title="Controls & Guide">❓ HELP</button>
+        </div>
+      </div>
+
+      <!-- Canvas Screen & CRT Filter -->
+      <div class="screen-wrapper">
+        <canvas id="gameCanvas"></canvas>
+        <div id="crt-overlay" class="crt-overlay"></div>
+        <div class="crt-glare"></div>
+      </div>
+
+      <!-- Touch Controls (Mobile / Tablet friendly) -->
+      <div class="touch-controls">
+        <div class="d-pad">
+          <button class="d-btn d-up" id="btn-up">▲</button>
+          <button class="d-btn d-left" id="btn-left">◀</button>
+          <div class="d-center"></div>
+          <button class="d-btn d-right" id="btn-right">▶</button>
+          <button class="d-btn d-down" id="btn-down">▼</button>
+        </div>
+
+        <div class="action-buttons">
+          <button class="action-btn btn-b" id="btn-action">
+            B
+            <small>RUN/ICE</small>
+          </button>
+          <button class="action-btn btn-a" id="btn-jump">
+            A
+            <small>JUMP</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- Keyboard Controls Quick Guide -->
+      <div class="controls-guide">
+        <div class="guide-item">
+          <span class="key-tag">◀</span><span class="key-tag">▶</span> or <span class="key-tag">A</span><span class="key-tag">D</span> Walk
+        </div>
+        <div class="guide-item">
+          <span class="key-tag">SPACE</span> or <span class="key-tag">W</span> Jump
+        </div>
+        <div class="guide-item">
+          <span class="key-tag">SHIFT</span> or <span class="key-tag">X</span> Dash / Snowball
+        </div>
+        <div class="guide-item">
+          <span class="key-tag">▼</span> or <span class="key-tag">S</span> Crouch / Enter Pipe
+        </div>
+        <div class="guide-item">
+          <span class="key-tag">P</span> Pause
+        </div>
+        <div class="guide-item">
+          <span class="key-tag">M</span> Mute
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Help & Instructions Modal -->
+  <div id="help-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>❄️</span> Super Mario Winter - Guide
+      </div>
+      <div class="modal-content">
+        <p><strong>Welcome to the Winter Kingdom!</strong></p>
+        <p>Guide Cozy Mario through 4 handcrafted snowy stages, defeat Frost Bowser, and bring warmth back to the realm!</p>
+        
+        <ul>
+          <li><strong>Movement:</strong> Use <span class="key-tag">Arrow Keys</span> or <span class="key-tag">WASD</span>. Hold <span class="key-tag">Shift</span> or <span class="key-tag">X</span> to run fast and skid across the snow!</li>
+          <li><strong>Variable Jump:</strong> Tap <span class="key-tag">Space</span> for a hop, or hold it down for a mighty high leap!</li>
+          <li><strong>Gift '?' Blocks:</strong> Hit them from below to unwrap coins, mushrooms, and frost flowers.</li>
+          <li><strong>Snow Goombas:</strong> Stomp them to squish their earmuffs!</li>
+          <li><strong>Frost Koopas:</strong> Stomp into their ice shells, then run into them to kick and bowl over lines of enemies!</li>
+          <li><strong>Candy-Cane Pipes:</strong> Stand on certain striped pipes and press <span class="key-tag">Down</span> to enter hidden ice caverns!</li>
+          <li><strong>Frost Flower:</strong> Collect the ice flower to throw bouncing snowballs with <span class="key-tag">Shift</span> / <span class="key-tag">X</span>!</li>
+          <li><strong>Cozy Log Cabin:</strong> Slide down the holiday flagpole to set off victory fireworks and warm up by the hearth.</li>
+        </ul>
+      </div>
+      <button id="modal-close-btn" class="modal-close">LET'S PLAY!</button>
+    </div>
+  </div>
+
+  <!-- Ambient Snow Script -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('ambient-snow');
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+
+      const flakes = [];
+      for (let i = 0; i < 60; i++) {
+        flakes.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 2 + 1,
+          d: Math.random() + 0.5,
+          a: Math.random() * Math.PI * 2
+        });
+      }
+
+      function drawSnow() {
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.beginPath();
+        for (let i = 0; i < flakes.length; i++) {
+          const f = flakes[i];
+          ctx.moveTo(f.x, f.y);
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+        }
+        ctx.fill();
+
+        for (let i = 0; i < flakes.length; i++) {
+          const f = flakes[i];
+          f.a += 0.01;
+          f.y += f.d * 0.8;
+          f.x += Math.sin(f.a) * 0.5;
+
+          if (f.y > h) {
+            f.y = -5;
+            f.x = Math.random() * w;
+          }
+        }
+        requestAnimationFrame(drawSnow);
+      }
+      drawSnow();
+
+      // UI button hooks
+      const crtOverlay = document.getElementById('crt-overlay');
+      const btnCrt = document.getElementById('btn-crt');
+      btnCrt.addEventListener('click', () => {
+        crtOverlay.classList.toggle('disabled');
+        btnCrt.textContent = crtOverlay.classList.contains('disabled') ? '📺 CRT OFF' : '📺 CRT FX';
+      });
+
+      const helpModal = document.getElementById('help-modal');
+      const btnHelp = document.getElementById('btn-help');
+      const btnModalClose = document.getElementById('modal-close-btn');
+
+      btnHelp.addEventListener('click', () => {
+        helpModal.classList.add('active');
+      });
+
+      btnModalClose.addEventListener('click', () => {
+        helpModal.classList.remove('active');
+      });
+
+      helpModal.addEventListener('click', (e) => {
+        if (e.target === helpModal) {
+          helpModal.classList.remove('active');
+        }
+      });
+    })();
+  </script>
+
+  <!-- Game Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/game.js"></script>
+
+</body>
+</html>
