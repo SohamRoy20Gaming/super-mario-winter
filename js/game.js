@@ -230,9 +230,20 @@ class Engine {
     Sound.ensureContext();
     if (this.state === 'PLAYING') {
       this.state = 'PAUSED';
+      Sound.pauseMusic();
+      Sound.playPause();
       this.updatePauseUI(true);
     } else if (this.state === 'PAUSED') {
       this.state = 'PLAYING';
+      Sound.playPause();
+      if (Sound.pausedTrack) {
+        Sound.resumeMusic();
+      } else {
+        const track = (this.player && this.player.starTimer > 0)
+          ? 'star'
+          : (this.level?.musicTrack || 'overworld');
+        Sound.startMusic(track);
+      }
       this.updatePauseUI(false);
     }
   }

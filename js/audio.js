@@ -12,7 +12,10 @@ class SoundEngine {
     this.musicGain = null;
     this.sfxGain = null;
     this.currentTrack = null;
+    this.pausedTrack = null;
+    this.pausedStep = 0;
     this.isPlayingMusic = false;
+    this.musicVolume = 0.35;
     this.musicStep = 0;
     this.musicTimer = null;
     this.initialized = false;
@@ -29,7 +32,7 @@ class SoundEngine {
       this.masterGain.connect(this.ctx.destination);
 
       this.musicGain = this.ctx.createGain();
-      this.musicGain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      this.musicGain.gain.setValueAtTime(this.musicVolume, this.ctx.currentTime);
       this.musicGain.connect(this.masterGain);
 
       this.sfxGain = this.ctx.createGain();
@@ -496,6 +499,9 @@ class SoundEngine {
   startMusic(trackName) {
     if (this.currentTrack === trackName && this.isPlayingMusic) return;
     this.stopMusic();
+    if (this.musicGain && this.ctx) {
+      this.musicGain.gain.setValueAtTime(this.musicVolume, this.ctx.currentTime);
+    }
     this.currentTrack = trackName;
     this.isPlayingMusic = true;
     this.musicStep = 0;
@@ -505,10 +511,64 @@ class SoundEngine {
   stopMusic() {
     this.isPlayingMusic = false;
     this.currentTrack = null;
+    this.pausedTrack = null;
+    this.pausedStep = 0;
     if (this.musicTimer) {
       clearTimeout(this.musicTimer);
       this.musicTimer = null;
     }
+    if (this.musicGain && this.ctx) {
+      this.musicGain.gain.setValueAtTime(0, this.ctx.currentTime);
+    }
+  }
+
+  pauseMusic() {
+    if (!this.isPlayingMusic) return;
+    this.pausedTrack = this.currentTrack;
+    this.pausedStep = this.musicStep;
+    this.isPlayingMusic = false;
+    this.currentTrack = null;
+    if (this.musicTimer) {
+      clearTimeout(this.musicTimer);
+      this.musicTimer = null;
+    }
+    if (this.musicGain && this.ctx) {
+      this.musicGain.gain.setValueAtTime(0, this.ctx.currentTime);
+    }
+  }
+
+  resumeMusic() {
+    if (this.isPlayingMusic || !this.pausedTrack) return;
+    this.currentTrack = this.pausedTrack;
+    this.musicStep = this.pausedStep || 0;
+    this.pausedTrack = null;
+    this.pausedStep = 0;
+    if (this.musicGain && this.ctx) {
+      this.musicGain.gain.setValueAtTime(this.musicVolume, this.ctx.currentTime);
+    }
+    this.isPlayingMusic = true;
+    this.scheduleNextBeat();
+  }
+
+  playPause() {
+    if (this.isMuted) return;
+    this.ensureContext();
+    if (!this.ctx) return;
+
+    const notes = [1318, 1046, 1318, 1046];
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = this.ctx.currentTime + idx * 0.045;
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.18, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start(t);
+      osc.stop(t + 0.04);
+    });
   }
 
   scheduleNextBeat() {
@@ -637,6 +697,7 @@ class SoundEngine {
         this.playTone(note, 0.18, 'sine', 0.16);
         // Crystal echo
         setTimeout(() => {
+          if (!this.isPlayingMusic) return;
           this.playTone(note * 1.5, 0.12, 'sine', 0.05);
         }, 120);
       }
