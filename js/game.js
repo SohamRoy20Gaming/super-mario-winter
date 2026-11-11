@@ -92,11 +92,7 @@ class Engine {
       Sound.ensureContext();
 
       if (e.code === 'KeyP' || e.code === 'Escape') {
-        if (this.state === 'PLAYING') {
-          this.state = 'PAUSED';
-        } else if (this.state === 'PAUSED') {
-          this.state = 'PLAYING';
-        }
+        this.togglePause();
         return;
       }
 
@@ -146,15 +142,41 @@ class Engine {
       }
     });
 
-    // Canvas click to start title screen
+    // Canvas click to start or unpause
     this.canvas.addEventListener('click', () => {
       Sound.ensureContext();
-      if (this.state === 'TITLE') {
+      if (this.state === 'PAUSED') {
+        this.togglePause();
+      } else if (this.state === 'TITLE') {
         this.startNewGame();
       } else if (this.state === 'GAMEOVER' || this.state === 'VICTORY') {
         this.state = 'TITLE';
       }
     });
+
+    // Pause button handlers (mobile on-screen, mobile touch-bar, and marquee)
+    const triggerPause = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.togglePause();
+    };
+
+    const btnScreenPause = document.getElementById('btn-screen-pause');
+    if (btnScreenPause) {
+      btnScreenPause.addEventListener('click', triggerPause);
+      btnScreenPause.addEventListener('touchstart', triggerPause, { passive: false });
+    }
+
+    const btnTouchPause = document.getElementById('btn-touch-pause');
+    if (btnTouchPause) {
+      btnTouchPause.addEventListener('click', triggerPause);
+      btnTouchPause.addEventListener('touchstart', triggerPause, { passive: false });
+    }
+
+    const btnHeaderPause = document.getElementById('btn-pause');
+    if (btnHeaderPause) {
+      btnHeaderPause.addEventListener('click', triggerPause);
+    }
 
     // Mute button click
     const muteBtn = document.getElementById('btn-mute');
@@ -204,6 +226,40 @@ class Engine {
     bindTouch('btn-action', 'run');
   }
 
+  togglePause() {
+    Sound.ensureContext();
+    if (this.state === 'PLAYING') {
+      this.state = 'PAUSED';
+      this.updatePauseUI(true);
+    } else if (this.state === 'PAUSED') {
+      this.state = 'PLAYING';
+      this.updatePauseUI(false);
+    }
+  }
+
+  updatePauseUI(isPaused) {
+    const screenPauseBtn = document.getElementById('btn-screen-pause');
+    if (screenPauseBtn) {
+      screenPauseBtn.textContent = isPaused ? '▶️' : '⏸️';
+      screenPauseBtn.title = isPaused ? 'Resume Game (P)' : 'Pause Game (P)';
+      screenPauseBtn.classList.toggle('active', isPaused);
+    }
+
+    const touchPauseBtn = document.getElementById('btn-touch-pause');
+    if (touchPauseBtn) {
+      const icon = touchPauseBtn.querySelector('.pause-icon');
+      const text = touchPauseBtn.querySelector('.pause-text');
+      if (icon) icon.textContent = isPaused ? '▶️' : '⏸️';
+      if (text) text.textContent = isPaused ? 'RESUME' : 'PAUSE';
+      touchPauseBtn.classList.toggle('active', isPaused);
+    }
+
+    const headerPauseBtn = document.getElementById('btn-pause');
+    if (headerPauseBtn) {
+      headerPauseBtn.textContent = isPaused ? '▶️ RESUME' : '⏸️ PAUSE';
+    }
+  }
+
   // --- Game Flow Methods ---
   startNewGame() {
     this.score = 0;
@@ -224,6 +280,7 @@ class Engine {
     this.cameraX = 0;
     this.timeLeft = data.timeLimit || 400;
     this.timeCounter = 0;
+    this.updatePauseUI(false);
 
     // Reset entities
     this.items = [];
@@ -734,10 +791,10 @@ class Engine {
     this.ctx.font = '14px "Press Start 2P", monospace';
     this.ctx.fillStyle = '#ffffff';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText('PAUSED', 160, 120);
+    this.ctx.fillText('PAUSED', 160, 115);
     this.ctx.font = '7px "Press Start 2P", monospace';
     this.ctx.fillStyle = '#a0e4f1';
-    this.ctx.fillText('PRESS P OR ESC TO RESUME', 160, 140);
+    this.ctx.fillText('PRESS P, ESC OR TAP TO RESUME', 160, 138);
     this.ctx.restore();
   }
 

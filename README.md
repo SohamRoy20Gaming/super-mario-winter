@@ -21,7 +21,7 @@ Open `index.html` directly in any modern browser (Chrome, Edge, Firefox, Safari)
 | **Run / Dash** | Hold `Shift`, `X`, `F`, or `C` | `B` Button |
 | **Throw Snowball (Frost Mario)** | Tap `Shift`, `X`, `F`, or `C` | `B` Button |
 | **Crouch / Enter Pipes** | `▼` or `S` | Down D-Pad |
-| **Pause Game** | `P` or `Escape` | Header Icon |
+| **Pause / Resume Game** | `P` or `Escape` | `⏸️` On-Screen Button / `PAUSE` Touch Button / Tap Canvas |
 | **Mute / Unmute Sound** | `M` | `🔊 SOUND` Button |
 | **Toggle CRT Scanlines** | Header `📺 CRT` Button | Header Button |
 | **Restart Current Stage** | `R` | - |
@@ -82,7 +82,7 @@ The game features an authentic, 100% self-contained procedural synthesizer using
 ## 📁 Project Structure
 
 ```
-Mario Winter/
+classic-mario-winter/
 │
 ├── index.html           # Main game markup, CRT filter overlay, touch D-pad
 ├── css/

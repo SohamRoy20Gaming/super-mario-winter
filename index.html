@@ -27,6 +27,7 @@
         </div>
 
         <div class="cabinet-controls">
+          <button id="btn-pause" class="btn-icon" title="Pause / Resume Game (P)">⏸️ PAUSE</button>
           <button id="btn-mute" class="btn-icon" title="Toggle Sound (M)">🔊 SOUND ON</button>
           <button id="btn-crt" class="btn-icon" title="Toggle CRT Scanlines">📺 CRT FX</button>
           <button id="btn-help" class="btn-icon" title="Controls & Guide">❓ HELP</button>
@@ -36,6 +37,7 @@
       <!-- Canvas Screen & CRT Filter -->
       <div class="screen-wrapper">
         <canvas id="gameCanvas"></canvas>
+        <button id="btn-screen-pause" class="screen-pause-btn" aria-label="Pause Game" title="Pause Game (P)">⏸️</button>
         <div id="crt-overlay" class="crt-overlay"></div>
         <div class="crt-glare"></div>
       </div>
@@ -48,6 +50,13 @@
           <div class="d-center"></div>
           <button class="d-btn d-right" id="btn-right">▶</button>
           <button class="d-btn d-down" id="btn-down">▼</button>
+        </div>
+
+        <div class="touch-center-controls">
+          <button id="btn-touch-pause" class="touch-pause-btn" aria-label="Pause / Resume Game">
+            <span class="pause-icon">⏸️</span>
+            <span class="pause-text">PAUSE</span>
+          </button>
         </div>
 
         <div class="action-buttons">
