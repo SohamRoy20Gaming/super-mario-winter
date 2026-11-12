@@ -97,7 +97,11 @@ body {
 }
 
 .brand-icon {
-  font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  border-radius: 6px;
   filter: drop-shadow(0 0 6px #60a5fa);
   animation: float 2.5s ease-in-out infinite;
 }

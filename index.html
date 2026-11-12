@@ -42,10 +42,10 @@
       <!-- Top Marquee Header -->
       <div class="bezel-header">
         <div class="brand-badge">
-          <span class="brand-icon">❄️</span>
+          <img src="favicon.png" alt="Super Mario Winter" class="brand-icon">
           <div>
             <div class="brand-title">SUPER MARIO WINTER</div>
-            <div class="brand-subtitle">Winter Edition</div>
+            <div class="brand-subtitle">The Holiday Adventure</div>
           </div>
         </div>
 
@@ -53,6 +53,7 @@
           <button id="btn-pause" class="btn-icon" title="Pause / Resume Game (P)">⏸️ PAUSE</button>
           <button id="btn-reset" class="btn-icon btn-reset" title="Reset Game (keeps High Score)">🔄 RESET</button>
           <button id="btn-mute" class="btn-icon" title="Toggle Sound (M)">🔊 SOUND ON</button>
+          <button id="btn-snow" class="btn-icon" title="Toggle Ambient Snow">❄️ SNOW ON</button>
           <button id="btn-crt" class="btn-icon" title="Toggle CRT Scanlines">📺 CRT FX</button>
           <button id="btn-help" class="btn-icon" title="Controls & Guide">❓ HELP</button>
         </div>
@@ -178,7 +179,15 @@
         });
       }
 
+      let snowEnabled = true;
+      let snowAnimId = null;
+
       function drawSnow() {
+        if (!snowEnabled) {
+          snowAnimId = null;
+          return;
+        }
+
         ctx.clearRect(0, 0, w, h);
         ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.beginPath();
@@ -200,14 +209,38 @@
             f.x = Math.random() * w;
           }
         }
-        requestAnimationFrame(drawSnow);
+        snowAnimId = requestAnimationFrame(drawSnow);
       }
-      drawSnow();
+      snowAnimId = requestAnimationFrame(drawSnow);
 
       // UI button hooks
+      const btnSnow = document.getElementById('btn-snow');
+      if (btnSnow) {
+        btnSnow.addEventListener('click', () => {
+          btnSnow.blur();
+          snowEnabled = !snowEnabled;
+          if (snowEnabled) {
+            canvas.style.display = 'block';
+            btnSnow.textContent = '❄️ SNOW ON';
+            if (!snowAnimId) {
+              snowAnimId = requestAnimationFrame(drawSnow);
+            }
+          } else {
+            if (snowAnimId) {
+              cancelAnimationFrame(snowAnimId);
+              snowAnimId = null;
+            }
+            ctx.clearRect(0, 0, w, h);
+            canvas.style.display = 'none';
+            btnSnow.textContent = '❄️ SNOW OFF';
+          }
+        });
+      }
+
       const crtOverlay = document.getElementById('crt-overlay');
       const btnCrt = document.getElementById('btn-crt');
       btnCrt.addEventListener('click', () => {
+        btnCrt.blur();
         crtOverlay.classList.toggle('disabled');
         btnCrt.textContent = crtOverlay.classList.contains('disabled') ? '📺 CRT OFF' : '📺 CRT FX';
       });
@@ -217,6 +250,7 @@
       const btnModalClose = document.getElementById('modal-close-btn');
 
       btnHelp.addEventListener('click', () => {
+        btnHelp.blur();
         helpModal.classList.add('active');
       });
 
