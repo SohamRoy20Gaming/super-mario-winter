@@ -44,6 +44,36 @@ class Level {
         this.tiles[r][c] = this.createTile(char, c, r);
       }
     }
+    this.snapLandmarksToGround();
+  }
+
+  snapLandmarksToGround() {
+    const findGroundY = (col, startRow) => {
+      for (let r = startRow; r < this.heightInTiles; r++) {
+        if (this.tiles[r][col]?.solid) {
+          return r * 16;
+        }
+      }
+      return null;
+    };
+
+    for (const s of this.scenery) {
+      const groundY = findGroundY(s.col, s.row);
+      if (groundY !== null) {
+        if (s.type === 'tree') {
+          s.y = groundY - 48; // scenery_pine_tree is 48px tall
+        } else if (s.type === 'snowman') {
+          s.y = groundY - 31; // bottom snowball rests at pixel y=31
+        }
+      }
+    }
+
+    if (this.cabin) {
+      const groundY = findGroundY(this.cabin.col, this.cabin.row);
+      if (groundY !== null) {
+        this.cabin.y = groundY - 64; // scenery_cabin is 64px tall
+      }
+    }
   }
 
   createTile(char, col, row) {
@@ -114,17 +144,20 @@ class Level {
       case '>': // Pipe body right
         return { ...baseTile, solid: true, renderType: 'pipe', pipePart: char };
       case 'T': // Pine Tree landmark
-        this.scenery.push({ type: 'tree', x: x, y: y - 32 });
+        this.scenery.push({ type: 'tree', x: x, y: y - 32, col, row });
         return baseTile;
       case 'N': // Snowman landmark
-        this.scenery.push({ type: 'snowman', x: x, y: y - 16 });
+        this.scenery.push({ type: 'snowman', x: x, y: y - 15, col, row });
         return baseTile;
       case 'H': // End of level cozy cabin
-        this.cabin = { x: x, y: y - 48, w: 64, h: 64 };
+        this.cabin = { x: x, y: y - 48, w: 64, h: 64, col, row };
         return baseTile;
       case 'F': // Flagpole
-        this.flagpole = { x: x + 6, topY: y, botY: y + 144 };
-        this.flagBaseY = y + 144;
+        if (!this.flagpole) {
+          this.flagpole = { x: x + 6, topY: y, botY: y + 16 };
+        }
+        this.flagpole.botY = y + 16;
+        this.flagBaseY = y + 16;
         return baseTile;
       case 'X': // Golden Axe (Castle)
         this.axe = { x: x, y: y, w: 16, h: 16 };
@@ -369,8 +402,8 @@ const LEVEL_DATA = {
       "..................................................................BB.BB.BB..................................................................................F.......................",
       "...................B?M?B....................??...................BBBBBBBBBB.............B?B.................................................................F.......................",
       "..................................................................................................................G.........................................F.......................",
-      "......T........[].T............[]..N........[]............[]......................[]...............GG...........GGG..................[].....................F.........H.............",
-      "...............<>.T............<>...........<>............<>......................<>..............GGG..........GGGG..................<>.....................F.......................",
+      "...............[]..............[]...........[]............[]......................[]...............GG...........GGG..................[].....................F.......................",
+      "......T........<>.T............<>..N........<>............<>......................<>..............GGG..........GGGG..................<>.....................F.........H.............",
       "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
       "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     ]
@@ -482,8 +515,8 @@ const LEVEL_DATA = {
       "...............................................................................................................................F........",
       "....GGGG.....................GGGGGG.....................GGGGG.........................................GGGGG...................F........",
       "...............................................................................................................................F........",
-      "G..............................................................................................................................F......H.",
       "G..............................................................................................................................F........",
+      "G..............................................................................................................................F......H.",
       "GGGGGG...................................................................................................................GGGGGGGGGGGGGG",
       "GGGGGG...................................................................................................................GGGGGGGGGGGGGG"
     ]
