@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;600;700&display=swap');
 
+@font-face {
+  font-family: 'SuperMarioNES';
+  src: url('../Super_Mario_Bros._NES.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --winter-dark: #0a1128;
   --winter-deep-blue: #1c2541;
@@ -8,7 +16,7 @@
   --winter-gold: #ffbe0b;
   --winter-red: #e63946;
   --winter-snow: #f8f9fa;
-  --font-retro: 'Press Start 2P', monospace;
+  --font-retro: 'SuperMarioNES', 'Press Start 2P', monospace;
   --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -108,7 +116,9 @@ body {
 }
 
 .brand-subtitle {
-  font-size: 10px;
+  font-family: var(--font-retro);
+  font-size: 9px;
+  margin-top: 3px;
   color: #93c5fd;
   font-weight: 600;
   text-transform: uppercase;
@@ -519,10 +529,10 @@ body {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   color: #e2e8f0;
-  font-family: var(--font-body);
-  font-size: 12px;
+  font-family: var(--font-retro), var(--font-body);
+  font-size: 9px;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   pointer-events: none;

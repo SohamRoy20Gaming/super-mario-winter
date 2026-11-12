@@ -167,7 +167,7 @@ class ParticleSystem {
         ctx.globalAlpha = 1.0;
       } else if (p.type === 'score_text') {
         ctx.save();
-        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.font = '8px "SuperMarioNES", "Press Start 2P", monospace';
         ctx.fillStyle = '#ffffff';
         ctx.shadowColor = '#000000';
         ctx.shadowBlur = 2;

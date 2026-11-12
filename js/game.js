@@ -70,6 +70,9 @@ class Engine {
 
   start() {
     initSprites();
+    if (document.fonts && document.fonts.load) {
+      document.fonts.load('16px "SuperMarioNES"').catch(() => {});
+    }
     requestAnimationFrame((t) => this.loop(t));
   }
 
@@ -701,7 +704,7 @@ class Engine {
 
   renderHUD() {
     this.ctx.save();
-    this.ctx.font = '8px "Press Start 2P", monospace';
+    this.ctx.font = '8px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#ffffff';
     this.ctx.shadowColor = '#000000';
     this.ctx.shadowBlur = 2;
@@ -759,18 +762,18 @@ class Engine {
     if (marioSprite) this.ctx.drawImage(marioSprite, 150, 184);
 
     this.ctx.save();
-    this.ctx.font = '16px "Press Start 2P", monospace';
+    this.ctx.font = '16px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#e63946';
     this.ctx.textAlign = 'center';
     this.ctx.shadowColor = '#0077b6';
     this.ctx.shadowBlur = 8;
     this.ctx.fillText('SUPER MARIO', 160, 60);
 
-    this.ctx.font = '20px "Press Start 2P", monospace';
+    this.ctx.font = '20px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#a0e4f1';
     this.ctx.fillText('WINTER', 160, 88);
 
-    this.ctx.font = '7px "Press Start 2P", monospace';
+    this.ctx.font = '7px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#ffffff';
     this.ctx.shadowBlur = 2;
     this.ctx.fillText('❄ THE HOLIDAY ADVENTURE ❄', 160, 108);
@@ -782,7 +785,7 @@ class Engine {
     }
 
     this.ctx.fillStyle = '#94a3b8';
-    this.ctx.font = '7px "Press Start 2P", monospace';
+    this.ctx.font = '7px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillText(`TOP SCORE: ${this.highScore.toString().padStart(6, '0')}`, 160, 165);
 
     this.ctx.restore();
@@ -793,7 +796,7 @@ class Engine {
     this.ctx.fillRect(0, 0, this.VIEW_WIDTH, this.VIEW_HEIGHT);
 
     this.ctx.save();
-    this.ctx.font = '11px "Press Start 2P", monospace';
+    this.ctx.font = '11px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#ffffff';
     this.ctx.textAlign = 'center';
     this.ctx.fillText(`WORLD ${this.currentWorldId}`, 160, 100);
@@ -812,11 +815,11 @@ class Engine {
     this.ctx.fillRect(0, 0, this.VIEW_WIDTH, this.VIEW_HEIGHT);
 
     this.ctx.save();
-    this.ctx.font = '14px "Press Start 2P", monospace';
+    this.ctx.font = '14px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#ffffff';
     this.ctx.textAlign = 'center';
     this.ctx.fillText('PAUSED', 160, 115);
-    this.ctx.font = '7px "Press Start 2P", monospace';
+    this.ctx.font = '7px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#a0e4f1';
     this.ctx.fillText('PRESS P, ESC OR TAP TO RESUME', 160, 138);
     this.ctx.restore();
@@ -827,12 +830,12 @@ class Engine {
     this.ctx.fillRect(0, 0, this.VIEW_WIDTH, this.VIEW_HEIGHT);
 
     this.ctx.save();
-    this.ctx.font = '16px "Press Start 2P", monospace';
+    this.ctx.font = '16px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#e63946';
     this.ctx.textAlign = 'center';
     this.ctx.fillText('GAME OVER', 160, 100);
 
-    this.ctx.font = '8px "Press Start 2P", monospace';
+    this.ctx.font = '8px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#ffffff';
     this.ctx.fillText(`SCORE: ${this.score}`, 160, 130);
 
@@ -851,12 +854,12 @@ class Engine {
     this.particles.renderSnow(this.ctx, 0);
 
     this.ctx.save();
-    this.ctx.font = '14px "Press Start 2P", monospace';
+    this.ctx.font = '14px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#ffbe0b';
     this.ctx.textAlign = 'center';
     this.ctx.fillText('CONGRATULATIONS!', 160, 60);
 
-    this.ctx.font = '8px "Press Start 2P", monospace';
+    this.ctx.font = '8px "SuperMarioNES", "Press Start 2P", monospace';
     this.ctx.fillStyle = '#a0e4f1';
     this.ctx.fillText('YOU SAVED THE WINTER KINGDOM!', 160, 85);
 
