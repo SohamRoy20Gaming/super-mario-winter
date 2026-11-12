@@ -127,7 +127,14 @@ body {
 
 .cabinet-controls {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
+}
+
+.btn-reset:hover {
+  background: rgba(239, 68, 68, 0.28);
+  border-color: #f87171;
 }
 
 .btn-icon {
@@ -310,6 +317,21 @@ body {
 
 .touch-pause-btn .pause-icon {
   font-size: 12px;
+}
+
+.touch-reset-btn {
+  color: #fca5a5;
+  padding: 8px 14px;
+  font-size: 9px;
+}
+
+.touch-reset-btn:hover {
+  border-color: #f87171;
+}
+
+.touch-reset-btn:active {
+  background: #ef4444;
+  border-color: #fca5a5;
 }
 
 .d-pad {

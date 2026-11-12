@@ -166,6 +166,7 @@ class Engine {
     const triggerPause = (e) => {
       e.preventDefault();
       e.stopPropagation();
+      e.currentTarget?.blur?.();
       this.togglePause();
     };
 
@@ -186,10 +187,30 @@ class Engine {
       btnHeaderPause.addEventListener('click', triggerPause);
     }
 
+    // Reset button handlers (keeps high score intact)
+    const triggerReset = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.currentTarget?.blur?.();
+      this.resetGame();
+    };
+
+    const btnHeaderReset = document.getElementById('btn-reset');
+    if (btnHeaderReset) {
+      btnHeaderReset.addEventListener('click', triggerReset);
+    }
+
+    const btnTouchReset = document.getElementById('btn-touch-reset');
+    if (btnTouchReset) {
+      btnTouchReset.addEventListener('click', triggerReset);
+      btnTouchReset.addEventListener('touchstart', triggerReset, { passive: false });
+    }
+
     // Mute button click
     const muteBtn = document.getElementById('btn-mute');
     if (muteBtn) {
-      muteBtn.addEventListener('click', () => {
+      muteBtn.addEventListener('click', (e) => {
+        e.currentTarget?.blur?.();
         Sound.ensureContext();
         const isMuted = Sound.toggleMute();
         muteBtn.textContent = isMuted ? '🔇 SOUND OFF' : '🔊 SOUND ON';
@@ -288,6 +309,37 @@ class Engine {
     this.loadLevel(this.currentWorldId);
     this.state = 'INTRO';
     this.stateTimer = 110;
+  }
+
+  resetGame() {
+    Sound.ensureContext();
+    Sound.stopMusic();
+    Sound.playPause();
+
+    // Reset session progress while keeping highScore intact
+    this.score = 0;
+    this.coins = 0;
+    this.lives = 3;
+    this.currentWorldId = '1-1';
+    this.timeLeft = 400;
+    this.timeCounter = 0;
+    this.animTick = 0;
+    this.cameraX = 0;
+
+    this.enemies = [];
+    this.items = [];
+    this.blockCoins = [];
+    this.projectiles = [];
+    this.particles.particles = [];
+    this.player = null;
+    this.level = null;
+
+    for (const key of Object.keys(this.input)) {
+      this.input[key] = false;
+    }
+
+    this.updatePauseUI(false);
+    this.state = 'TITLE';
   }
 
   loadLevel(worldId) {
