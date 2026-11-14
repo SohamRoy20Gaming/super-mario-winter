@@ -962,43 +962,142 @@ class SpriteEngine {
       this.cache['hazard_icicle'] = canvas;
     }
 
-    // 8. Candy Cane Pipe Components
-    // Pipe Top (32 x 16)
+    // 8. Authentic NES Super Mario Bros Warp Pipe with Winter Theme
+    // Pipe Top Rim (32 x 16)
     {
       const { canvas, ctx } = this.createCanvas(32, 16);
-      // Red & white candy cane stripes
-      for (let x = 0; x < 32; x += 8) {
-        ctx.fillStyle = C.CANDY_RED;
-        ctx.fillRect(x, 0, 4, 16);
-        ctx.fillStyle = C.CANDY_WHITE;
-        ctx.fillRect(x + 4, 0, 4, 16);
-      }
-      // Top snowy rim
-      ctx.fillStyle = C.SNOW_WHITE;
-      ctx.fillRect(0, 0, 32, 4);
-      // Hanging snow drips
-      ctx.fillRect(2, 4, 3, 3);
-      ctx.fillRect(8, 4, 4, 4);
-      ctx.fillRect(18, 4, 3, 3);
-      ctx.fillRect(25, 4, 4, 5);
 
-      // Subtle border
-      ctx.fillStyle = '#1e293b';
-      ctx.strokeRect(0, 0, 32, 16);
+      // Colors for classic NES Super Mario Bros pipe
+      const cOutline = '#000000';
+      const cHighlightLight = '#80e868'; // Bright highlight band
+      const cHighlightMid = '#48c038';   // Mid highlight
+      const cMainGreen = '#00a800';      // Classic NES pipe green
+      const cDarkGreen = '#006000';      // Deep shadow green
+      const cDeepShadow = '#003800';     // Darkest edge shadow
+      const cSnowWhite = '#ffffff';      // Crisp fresh snow
+      const cSnowShadow = '#d0e1fd';     // Soft winter snow shadow
+
+      // 1. Base Pipe Top Rim with authentic vertical shading bands
+      ctx.fillStyle = cOutline;
+      ctx.fillRect(0, 0, 32, 16);
+
+      // Vertical shading columns:
+      // x: 1 - inner highlight border
+      ctx.fillStyle = cHighlightMid;
+      ctx.fillRect(1, 1, 1, 14);
+
+      // x: 2-4 - brightest highlight stripe
+      ctx.fillStyle = cHighlightLight;
+      ctx.fillRect(2, 1, 3, 14);
+
+      // x: 5-7 - highlight midtone
+      ctx.fillStyle = cHighlightMid;
+      ctx.fillRect(5, 1, 3, 14);
+
+      // x: 8-17 - classic NES main green
+      ctx.fillStyle = cMainGreen;
+      ctx.fillRect(8, 1, 10, 14);
+
+      // x: 18-27 - dark green shadow
+      ctx.fillStyle = cDarkGreen;
+      ctx.fillRect(18, 1, 10, 14);
+
+      // x: 28-30 - deep edge shadow
+      ctx.fillStyle = cDeepShadow;
+      ctx.fillRect(28, 1, 3, 14);
+
+      // Horizontal collar separation line at bottom of rim
+      ctx.fillStyle = cDeepShadow;
+      ctx.fillRect(1, 13, 30, 1);
+      ctx.fillStyle = cOutline;
+      ctx.fillRect(0, 14, 32, 2);
+
+      // 2. Winter Theme: Fluffy Snow Cap resting on top rim
+      ctx.fillStyle = cSnowWhite;
+      // Main snow blanket on top of rim
+      ctx.fillRect(0, 0, 32, 3);
+
+      // Scalloped snow drips hanging over the rim front
+      ctx.fillRect(2, 3, 4, 2);
+      ctx.fillRect(3, 5, 2, 1);
+
+      ctx.fillRect(9, 3, 5, 2);
+      ctx.fillRect(10, 5, 3, 2);
+      ctx.fillRect(11, 7, 1, 1);
+
+      ctx.fillRect(18, 3, 4, 2);
+      ctx.fillRect(19, 5, 2, 1);
+
+      ctx.fillRect(25, 3, 5, 2);
+      ctx.fillRect(26, 5, 3, 2);
+
+      // Snow shadow line on underside of snow
+      ctx.fillStyle = cSnowShadow;
+      ctx.fillRect(1, 2, 30, 1);
+
+      // Outer outline framing
+      ctx.fillStyle = cOutline;
+      ctx.fillRect(0, 0, 1, 16);
+      ctx.fillRect(31, 0, 1, 16);
+
       this.cache['pipe_top'] = canvas;
     }
 
-    // Pipe Body (32 x 16)
+    // Pipe Body (32 x 16) - 28px wide shaft recessed by 2px on each side
     {
       const { canvas, ctx } = this.createCanvas(32, 16);
-      for (let x = 0; x < 32; x += 8) {
-        ctx.fillStyle = C.CANDY_RED;
-        ctx.fillRect(x, 0, 4, 16);
-        ctx.fillStyle = C.CANDY_WHITE;
-        ctx.fillRect(x + 4, 0, 4, 16);
-      }
-      ctx.fillStyle = '#1e293b';
-      ctx.strokeRect(2, 0, 28, 16);
+
+      const cOutline = '#000000';
+      const cHighlightLight = '#80e868';
+      const cHighlightMid = '#48c038';
+      const cMainGreen = '#00a800';
+      const cDarkGreen = '#006000';
+      const cDeepShadow = '#003800';
+      const cSnowWhite = '#ffffff';
+
+      // Pipe body bounds: x = 2 to 29 (width 28px)
+      ctx.fillStyle = cOutline;
+      ctx.fillRect(2, 0, 28, 16);
+
+      // Vertical shading columns:
+      // x: 3 - inner highlight border
+      ctx.fillStyle = cHighlightMid;
+      ctx.fillRect(3, 0, 1, 16);
+
+      // x: 4-6 - brightest highlight stripe
+      ctx.fillStyle = cHighlightLight;
+      ctx.fillRect(4, 0, 3, 16);
+
+      // x: 7-9 - highlight midtone
+      ctx.fillStyle = cHighlightMid;
+      ctx.fillRect(7, 0, 3, 16);
+
+      // x: 10-18 - classic NES main green
+      ctx.fillStyle = cMainGreen;
+      ctx.fillRect(10, 0, 9, 16);
+
+      // x: 19-26 - dark green shadow
+      ctx.fillStyle = cDarkGreen;
+      ctx.fillRect(19, 0, 8, 16);
+
+      // x: 27-28 - deep edge shadow
+      ctx.fillStyle = cDeepShadow;
+      ctx.fillRect(27, 0, 2, 16);
+
+      // Black outline on left and right borders of the body
+      ctx.fillStyle = cOutline;
+      ctx.fillRect(2, 0, 1, 16);
+      ctx.fillRect(29, 0, 1, 16);
+
+      // Drop shadow cast by the pipe top rim onto the top of the body (y = 0)
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.fillRect(2, 0, 28, 2);
+
+      // Winter theme: subtle frost glints on the highlight band
+      ctx.fillStyle = cSnowWhite;
+      ctx.fillRect(5, 5, 1, 2);
+      ctx.fillRect(5, 12, 1, 2);
+
       this.cache['pipe_body'] = canvas;
     }
   }

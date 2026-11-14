@@ -44,7 +44,7 @@ Open `index.html` directly in any modern browser (Chrome, Edge, Firefox, Safari)
 ### 3. 🎁 Winter Blocks & Power-ups
 - **Gift '?' Blocks**: Wrapped golden gift boxes tied with festive ribbons and hanging icicles.
 - **Frost Bricks**: Crimson bricks dusted with snow that shatter into four spinning ice-brick chunks when struck by Super Mario.
-- **Peppermint Pipes**: Candy-cane striped pipes. Pressing Down on certain pipes leads to secret underground vaults!
+- **Classic Winter Warp Pipes**: Authentic NES Super Mario Bros green warp pipes with the iconic 4-tone shading bands, 2px rim overhang, collar drop-shadow, and a fresh blanket of fluffy snow on top. Pressing Down on certain pipes leads to secret underground vaults!
 - **Snowflake Coins**: Glowing 6-point golden snowflakes that spin and chime when collected.
 - **Frost Flower**: Ice-blue flower with crystalline petals that grants snowball-throwing powers.
 - **Holiday Star**: Golden five-pointed Christmas star granting temporary invincibility, speed boost, and rainbow sparkling trails!
@@ -60,7 +60,7 @@ Open `index.html` directly in any modern browser (Chrome, Edge, Firefox, Safari)
 1. **World 1-1: Frosted Foothills**  
    Faithfully recreates the authentic Super Mario Bros 1-1 walkthrough layout:
    - Iconic block arrangements (`?` blocks, Powerups, multi-coin bricks, and hidden 1-UP block).
-   - Candy-cane peppermint pipes with emerging Frost Piranha Plants.
+   - Snow-capped classic NES green warp pipes with authentic warp functionality.
    - Enterable Pipe 4 leading to the underground **Secret Ice Vault** packed with 20 golden coins.
    - Stepped stone pyramids (`E`), pit jumps, and the grand 8-step flagpole staircase!
    - Peppermint flagpole with star finial, fireworks, and cozy log cabin.
@@ -68,7 +68,7 @@ Open `index.html` directly in any modern browser (Chrome, Edge, Firefox, Safari)
 2. **World 1-2: Crystal Cavern**  
    Subterranean ice cave featuring:
    - Dropping entry pipe into deep crystal blue caverns.
-   - Single-tile stone pedestals across frozen pits, sliding Koopa shells, and piranha pipes.
+   - Single-tile stone pedestals across frozen pits, sliding Koopa shells, and snow-capped warp pipes.
    - Breakable ceiling blocks leading to the high-speed roof running track.
    - **The Secret Warp Zone**: Run along the ceiling past the normal exit pipe to access warp pipes leading forward to World 1-3, World 1-4, and bonus areas!
 
