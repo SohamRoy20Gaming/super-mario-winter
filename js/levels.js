@@ -97,6 +97,25 @@ class Level {
         return { ...baseTile, solid: true, renderType: 'ice_ground' };
       case 'W': // Castle Wall
         return { ...baseTile, solid: true, renderType: 'castle_wall' };
+      case 'E': // Frosted Stone / Pyramid Step Block
+        return { ...baseTile, solid: true, renderType: 'step' };
+      case 'U': // Hidden 1-UP Block (Invisible until bumped)
+        return {
+          ...baseTile,
+          solid: false,
+          isHidden: true,
+          renderType: null,
+          hasItem: '1up',
+          onBump: (player) => this.hitQuestion(col, row, player)
+        };
+      case 'Q': // Multi-Coin Brick
+        return {
+          ...baseTile,
+          solid: true,
+          renderType: 'brick',
+          coinCount: 10,
+          onBump: (player) => this.hitMultiCoin(col, row, player)
+        };
       case 'B': // Brick block
         return {
           ...baseTile,
@@ -229,6 +248,24 @@ class Level {
     }
   }
 
+  hitMultiCoin(col, row, player) {
+    const tile = this.getTile(col, row);
+    if (!tile || tile.coinCount <= 0) return;
+
+    tile.coinCount--;
+    tile.bumpOffset = -5;
+    const engine = this.getEngine();
+    if (engine) {
+      engine.addBlockCoin(col * 16, row * 16 - 12);
+      engine.addScore(200);
+      engine.addCoin();
+    }
+    if (tile.coinCount <= 0) {
+      tile.renderType = 'empty';
+      tile.isHit = true;
+    }
+  }
+
   checkPipeEntrance(player) {
     for (const p of this.pipes) {
       if (
@@ -335,6 +372,9 @@ class Level {
         } else if (tile.renderType === 'ice_ground' || tile.renderType === 'castle_wall') {
           const sprite = Sprites.get('tile_ice_ground');
           if (sprite) ctx.drawImage(sprite, screenX, screenY);
+        } else if (tile.renderType === 'step') {
+          const sprite = Sprites.get('block_step');
+          if (sprite) ctx.drawImage(sprite, screenX, screenY);
         } else if (tile.renderType === 'question') {
           const sprite = Sprites.get('block_question');
           if (sprite) ctx.drawImage(sprite, screenX, screenY);
@@ -365,9 +405,28 @@ class Level {
 // LEVEL BLUEPRINTS & HANDCRAFTED LAYOUTS
 // ==========================================
 
+// Helper to construct exact-width retro tilemap rows
+function createMapRows(width, height, rowDefs) {
+  const rows = [];
+  for (let r = 0; r < height; r++) {
+    const arr = new Array(width).fill('.');
+    const def = rowDefs[r];
+    if (def) {
+      for (const [colStr, str] of Object.entries(def)) {
+        const col = parseInt(colStr, 10);
+        for (let i = 0; i < str.length; i++) {
+          if (col + i < width) arr[col + i] = str[i];
+        }
+      }
+    }
+    rows.push(arr.join(''));
+  }
+  return rows;
+}
+
 const LEVEL_DATA = {
   // ----------------------------------------
-  // WORLD 1-1: FROSTED FOOTHILLS
+  // WORLD 1-1: FROSTED FOOTHILLS (Authentic NES Walkthrough Layout)
   // ----------------------------------------
   '1-1': {
     name: 'Frosted Foothills',
@@ -378,35 +437,41 @@ const LEVEL_DATA = {
     skyBot: '#a8dadc',
     timeLimit: 400,
     pipes: [
-      { x: 58 * 16, y: 11 * 16, canEnter: true, target: '1-1-sub' }
+      { x: 57 * 16, y: 9 * 16, canEnter: true, target: '1-1-sub' }
     ],
     enemies: [
-      { type: 'goomba', x: 22 * 16, y: 12 * 16 },
-      { type: 'goomba', x: 40 * 16, y: 12 * 16 },
-      { type: 'koopa',  x: 48 * 16, y: 11 * 16 },
-      { type: 'goomba', x: 80 * 16, y: 12 * 16 },
-      { type: 'goomba', x: 83 * 16, y: 12 * 16 },
-      { type: 'koopa',  x: 98 * 16, y: 11 * 16 },
-      { type: 'goomba', x: 115 * 16, y: 12 * 16 }
+      { type: 'goomba',  x: 22 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 40 * 16, y: 12 * 16 },
+      { type: 'piranha', x: 46 * 16, y: 9 * 16 },
+      { type: 'goomba',  x: 51 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 53 * 16, y: 12 * 16 },
+      { type: 'piranha', x: 57 * 16, y: 9 * 16 },
+      { type: 'koopa',   x: 78 * 16, y: 11 * 16 },
+      { type: 'goomba',  x: 80 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 82 * 16, y: 12 * 16 },
+      { type: 'piranha', x: 98 * 16, y: 10 * 16 },
+      { type: 'koopa',   x: 107 * 16, y: 11 * 16 },
+      { type: 'goomba',  x: 114 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 116 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 124 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 126 * 16, y: 12 * 16 },
+      { type: 'koopa',   x: 170 * 16, y: 11 * 16 }
     ],
-    // 15 rows tall, 180 cols wide
-    map: [
-      "....................................................................................................................................................................................",
-      "....................................................................................................................................................................................",
-      "....................................................................................................................................................................................",
-      "....................................................................................................................................................................................",
-      "....................................................................................................................................................................................",
-      "....................................................................................................................................................................................",
-      "....................................................................................................................................................................................",
-      "....................................................................................................................................................................................",
-      "..................................................................BB.BB.BB..................................................................................F.......................",
-      "...................B?M?B....................??...................BBBBBBBBBB.............B?B.................................................................F.......................",
-      "..................................................................................................................G.........................................F.......................",
-      "...............[]..............[]...........[]............[]......................[]...............GG...........GGG..................[].....................F.......................",
-      "......T........<>.T............<>..N........<>............<>......................<>..............GGG..........GGGG..................<>.....................F.........H.............",
-      "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
-      "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG...GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
-    ]
+    // 15 rows tall, 212 cols wide
+    map: createMapRows(212, 15, {
+      3: { 198: 'F' },
+      4: { 198: 'F' },
+      5: { 188: 'EE', 198: 'F' },
+      6: { 22: '?', 80: 'BBBSBB', 94: '?', 109: 'BBBBBB', 128: 'BBB', 187: 'EEE', 198: 'F' },
+      7: { 186: 'EEEE', 198: 'F' },
+      8: { 185: 'EEEEE', 198: 'F' },
+      9: { 16: '?', 20: 'BMB?B', 46: '[]', 57: '[]', 64: 'U', 77: 'BMB', 91: 'B?BB', 105: 'BQB', 118: 'B?B', 137: 'EE', 151: 'EE', 155: 'E', 168: 'B?BB', 184: 'EEEEEE', 198: 'F' },
+      10: { 38: '[]', 46: '<>', 57: '<>', 98: '[]', 136: 'EEEE', 150: 'EEE', 155: 'EE', 183: 'EEEEEEE', 198: 'F' },
+      11: { 28: '[]', 38: '<>', 46: '<>', 57: '<>', 98: '<>', 135: 'EEEEEE', 149: 'EEEE', 155: 'EEE', 163: '[]', 182: 'EEEEEEEE', 198: 'F' },
+      12: { 4: 'T', 10: 'N', 28: '<>', 33: 'T', 38: '<>', 46: '<>', 50: 'N', 57: '<>', 98: '<>', 122: 'T', 134: 'EEEEEEEE', 145: 'N', 148: 'EEEEE', 155: 'EEEE', 163: '<>', 174: 'T', 178: 'N', 181: 'EEEEEEEEE', 198: 'F', 205: 'H' },
+      13: { 0: 'G'.repeat(69), 71: 'G'.repeat(15), 89: 'G'.repeat(64), 155: 'G'.repeat(57) },
+      14: { 0: 'G'.repeat(69), 71: 'G'.repeat(15), 89: 'G'.repeat(64), 155: 'G'.repeat(57) }
+    })
   },
 
   // ----------------------------------------
@@ -425,27 +490,27 @@ const LEVEL_DATA = {
       { x: 30 * 16, y: 11 * 16, canEnter: true, target: '1-1-return' }
     ],
     enemies: [],
-    map: [
-      "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
-      "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
-      "I......................................I",
-      "I......................................I",
-      "I.....CCCCCCCCCCCCCCCCCCCC.............I",
-      "I.....CCCCCCCCCCCCCCCCCCCC.............I",
-      "I.....IIIIIIIIIIIIIIIIIIII.............I",
-      "I......................................I",
-      "I......................................I",
-      "I......................................I",
-      "I......................................I",
-      "I.............................[].......I",
-      "I.............................<>.......I",
-      "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
-      "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
-    ]
+    map: createMapRows(40, 15, {
+      0: { 0: 'I'.repeat(40) },
+      1: { 0: 'I'.repeat(40) },
+      2: { 0: 'I', 39: 'I' },
+      3: { 0: 'I', 3: '[]', 39: 'I' },
+      4: { 0: 'I', 3: '<>', 39: 'I' },
+      5: { 0: 'I', 39: 'I' },
+      6: { 0: 'I', 6: 'C'.repeat(20), 39: 'I' },
+      7: { 0: 'I', 6: 'I'.repeat(20), 39: 'I' },
+      8: { 0: 'I', 39: 'I' },
+      9: { 0: 'I', 39: 'I' },
+      10: { 0: 'I', 39: 'I' },
+      11: { 0: 'I', 30: '[]', 39: 'I' },
+      12: { 0: 'I', 30: '<>', 39: 'I' },
+      13: { 0: 'I'.repeat(40) },
+      14: { 0: 'I'.repeat(40) }
+    })
   },
 
   // ----------------------------------------
-  // WORLD 1-2: CRYSTAL CAVERN
+  // WORLD 1-2: CRYSTAL CAVERN (Underground with Warp Zone!)
   // ----------------------------------------
   '1-2': {
     name: 'Crystal Cavern',
@@ -455,38 +520,47 @@ const LEVEL_DATA = {
     skyTop: '#03071e',
     skyBot: '#1b263b',
     isIceLevel: true,
-    timeLimit: 350,
+    timeLimit: 400,
     pipes: [
-      { x: 120 * 16, y: 11 * 16, canEnter: true, target: '1-3' }
+      { x: 142 * 16, y: 9 * 16, canEnter: true, target: '1-3' },
+      { x: 152 * 16, y: 10 * 16, canEnter: true, target: '1-3' },
+      { x: 160 * 16, y: 10 * 16, canEnter: true, target: '1-4' },
+      { x: 168 * 16, y: 10 * 16, canEnter: true, target: '1-1-sub' }
     ],
     enemies: [
-      { type: 'goomba', x: 20 * 16, y: 12 * 16 },
-      { type: 'goomba', x: 32 * 16, y: 12 * 16 },
-      { type: 'koopa',  x: 55 * 16, y: 12 * 16 },
-      { type: 'goomba', x: 74 * 16, y: 12 * 16 },
-      { type: 'koopa',  x: 90 * 16, y: 12 * 16 }
+      { type: 'goomba',  x: 16 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 26 * 16, y: 12 * 16 },
+      { type: 'koopa',   x: 30 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 36 * 16, y: 12 * 16 },
+      { type: 'piranha', x: 66 * 16, y: 11 * 16 },
+      { type: 'piranha', x: 76 * 16, y: 10 * 16 },
+      { type: 'piranha', x: 86 * 16, y: 9 * 16 },
+      { type: 'goomba',  x: 95 * 16, y: 12 * 16 },
+      { type: 'koopa',   x: 100 * 16, y: 12 * 16 },
+      { type: 'goomba',  x: 105 * 16, y: 12 * 16 }
     ],
-    map: [
-      "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
-      "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
-      "I..................................................................................................................................I",
-      "I..................................................................................................................................I",
-      "I...............CCCCCCCC.....................CCCCCCCCCCCC..........................CCCCCCCCCC.....................................I",
-      "I..............IIIIIIIIII...................IIIIIIIIIIIIII.........................IIIIIIIIIII....................................I",
-      "I..................................................................................................................................I",
-      "I..................................................................................................................................I",
-      "I.......?M?......................B?B........................????...........................................................F.......I",
-      "I..........................................................................................................................F.......I",
-      "I..................................................................IIII....................................................F.......I",
-      "I................[]...........[]................[].................IIII............[]................[]....................F.......I",
-      "I................<>...........<>................<>.................IIII............<>................<>....................F.......I",
-      "IIIIIIIIIIIIIIIIIIIIIIII...IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
-      "IIIIIIIIIIIIIIIIIIIIIIII...IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
-    ]
+    // 15 rows tall, 175 cols wide
+    map: createMapRows(175, 15, {
+      0: { 0: 'I'.repeat(175) },
+      1: { 0: 'I', 174: 'I' },
+      2: { 0: 'I'.repeat(120), 126: 'I'.repeat(19), 174: 'I' },
+      3: { 0: 'I', 3: '[]', 145: 'I', 174: 'I' },
+      4: { 0: 'I', 3: '<>', 145: 'I', 174: 'I' },
+      5: { 0: 'I', 68: 'CCCCCCC', 78: 'CCCCCCC', 145: 'I', 151: 'CCCC', 159: 'CCCC', 167: 'CCCC', 174: 'I' },
+      6: { 0: 'I', 145: 'I', 174: 'I' },
+      7: { 0: 'I', 145: 'I', 174: 'I' },
+      8: { 0: 'I', 138: 'EEE', 145: 'I', 174: 'I' },
+      9: { 0: 'I', 10: 'BMB?B', 22: '?BB?B', 34: 'BBBB', 86: '[]', 108: 'BBBBB', 136: 'EEEEE', 142: '[]', 145: 'I', 174: 'I' },
+      10: { 0: 'I', 53: 'E', 76: '[]', 86: '<>', 134: 'EEEEEEE', 142: '<>', 145: 'I', 152: '[]', 160: '[]', 168: '[]', 174: 'I' },
+      11: { 0: 'I', 49: 'E', 53: 'E', 57: 'E', 66: '[]', 76: '<>', 86: '<>', 132: 'EEEEEEEEE', 142: '<>', 145: 'I', 152: '<>', 160: '<>', 168: '<>', 174: 'I' },
+      12: { 0: 'I', 49: 'E', 53: 'E', 57: 'E', 66: '<>', 76: '<>', 86: '<>', 130: 'EEEEEEEEEEE', 142: '<>', 145: 'I', 152: '<>', 160: '<>', 168: '<>', 174: 'I' },
+      13: { 0: 'I'.repeat(46), 61: 'I'.repeat(114) },
+      14: { 0: 'I'.repeat(46), 61: 'I'.repeat(114) }
+    })
   },
 
   // ----------------------------------------
-  // WORLD 1-3: ALPINE TREETOPS
+  // WORLD 1-3: ALPINE TREETOPS (Athletic Sky Mushroom Stages)
   // ----------------------------------------
   '1-3': {
     name: 'Alpine Treetops',
@@ -495,35 +569,34 @@ const LEVEL_DATA = {
     musicTrack: 'overworld',
     skyTop: '#023e8a',
     skyBot: '#90e0ef',
-    timeLimit: 300,
+    timeLimit: 350,
     pipes: [],
     enemies: [
-      { type: 'koopa',  x: 28 * 16, y: 7 * 16 },
-      { type: 'goomba', x: 48 * 16, y: 8 * 16 },
-      { type: 'koopa',  x: 72 * 16, y: 6 * 16 },
-      { type: 'goomba', x: 96 * 16, y: 7 * 16 }
+      { type: 'koopa',   x: 16 * 16, y: 9 * 16 },
+      { type: 'koopa',   x: 55 * 16, y: 7 * 16 },
+      { type: 'goomba',  x: 97 * 16, y: 5 * 16 },
+      { type: 'goomba',  x: 100 * 16, y: 5 * 16 },
+      { type: 'koopa',   x: 110 * 16, y: 7 * 16 }
     ],
-    map: [
-      "........................................................................................................................................",
-      "........................................................................................................................................",
-      "........................................................................................................................................",
-      "........................................................................................................................................",
-      "........................................................................................................................................",
-      "............................................CCCC....................CCCC................................................................",
-      "...................GGGGG..................GGGGGGGG................GGGGGGGG..............................................................",
-      "..........GGGG.....GGGGG..................GGGGGGGG................GGGGGGGG........B?S?B..................................................",
-      "...............................................................................................................................F........",
-      "....GGGG.....................GGGGGG.....................GGGGG.........................................GGGGG...................F........",
-      "...............................................................................................................................F........",
-      "G..............................................................................................................................F........",
-      "G..............................................................................................................................F......H.",
-      "GGGGGG...................................................................................................................GGGGGGGGGGGGGG",
-      "GGGGGG...................................................................................................................GGGGGGGGGGGGGG"
-    ]
+    // 15 rows tall, 160 cols wide
+    map: createMapRows(160, 15, {
+      3: { 148: 'F' },
+      4: { 77: 'S', 148: 'F' },
+      5: { 43: 'CCCC', 148: 'F' },
+      6: { 24: 'CCCC', 35: '?', 42: 'GGGGGG', 95: 'GGGGGGGGG', 148: 'F' },
+      7: { 23: 'GGGGGG', 73: 'GGGGGGGGGG', 134: 'E', 148: 'F' },
+      8: { 51: 'GGGGGGGGGG', 107: 'GGGGGGGG', 137: 'EE', 148: 'F' },
+      9: { 32: 'GGGGGGG', 86: 'GGGGGG', 131: 'E', 148: 'F' },
+      10: { 14: 'GGGGGG', 118: 'GGGGGGG', 148: 'F' },
+      11: { 64: 'GGGGGG', 128: 'E', 148: 'F' },
+      12: { 148: 'F', 155: 'H' },
+      13: { 0: 'G'.repeat(11), 140: 'G'.repeat(20) },
+      14: { 0: 'G'.repeat(11), 140: 'G'.repeat(20) }
+    })
   },
 
   // ----------------------------------------
-  // WORLD 1-4: BOWSER'S FROST KEEP
+  // WORLD 1-4: BOWSER'S FROST KEEP (Castle Showdown with Frostbars & Bridge Collapse)
   // ----------------------------------------
   '1-4': {
     name: "Bowser's Frost Keep",
@@ -535,24 +608,27 @@ const LEVEL_DATA = {
     timeLimit: 300,
     pipes: [],
     enemies: [
-      { type: 'bowser', x: 88 * 16, y: 9 * 16 }
+      { type: 'frostbar', x: 25 * 16, y: 10 * 16, length: 4, speed: 0.035 },
+      { type: 'frostbar', x: 46 * 16, y: 8 * 16, length: 4, speed: -0.04 },
+      { type: 'bowser',   x: 96 * 16, y: 8 * 16 }
     ],
-    map: [
-      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-      "W......................................................................................................W",
-      "W......................................................................................................W",
-      "W......................................................................................................W",
-      "W...............BBBB...................BBBBBB..........................................................W",
-      "W......................................................................................................W",
-      "W......................................................................................................W",
-      "W........B?B...............B?B......................................................................X..W",
-      "W...................................................................................................X..W",
-      "W...................................................................................................W..W",
-      "W...................................................................................................W..W",
-      "WWWWWWWWWWWW............WWWWWWWW............WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-      "LLLLLLLLLLLL............LLLLLLLL............LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
-      "LLLLLLLLLLLL............LLLLLLLL............LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-    ]
+    // 15 rows tall, 135 cols wide
+    map: createMapRows(135, 15, {
+      0: { 0: 'W'.repeat(135) },
+      1: { 0: 'W'.repeat(135) },
+      2: { 0: 'W', 134: 'W' },
+      3: { 0: 'W', 134: 'W' },
+      4: { 0: 'W', 134: 'W' },
+      5: { 0: 'W', 134: 'W' },
+      6: { 0: 'W', 37: 'W'.repeat(19), 134: 'W' },
+      7: { 0: 'W', 134: 'W' },
+      8: { 0: 'W', 134: 'W' },
+      9: { 0: 'W', 66: 'EEEE', 134: 'W' },
+      10: { 0: 'W', 19: 'W'.repeat(14), 37: 'W'.repeat(19), 64: 'EEEEEE', 107: 'X', 134: 'W' },
+      11: { 0: 'W', 63: 'EEEEEEEE', 78: 'B'.repeat(28), 107: 'W', 134: 'W' },
+      12: { 0: 'W'.repeat(15), 63: 'EEEEEEEE', 107: 'W'.repeat(28) },
+      13: { 0: 'W'.repeat(15), 15: 'L'.repeat(95), 110: 'W'.repeat(25) },
+      14: { 0: 'W'.repeat(15), 15: 'L'.repeat(95), 110: 'W'.repeat(25) }
+    })
   }
 };

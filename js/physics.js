@@ -85,6 +85,26 @@ const Physics = {
 
   // Resolve entity vertical movement with level tiles
   moveVertical(entity, level) {
+    // Check hidden block bump from below (e.g., Hidden 1-UP block)
+    if (entity.vy < 0 && entity.state !== undefined) {
+      const headCol = Math.floor((entity.x + entity.w / 2) / 16);
+      const headRow = Math.floor(entity.y / 16);
+      const headTile = level.getTile(headCol, headRow);
+      if (headTile && headTile.isHidden) {
+        const prevY = entity.y - entity.vy;
+        if (prevY >= (headRow + 1) * 16 - 2) {
+          headTile.isHidden = false;
+          headTile.solid = true;
+          headTile.renderType = 'empty';
+          headTile.bumpOffset = -6;
+          headTile.onBump?.(entity);
+          entity.y = (headRow + 1) * 16;
+          entity.vy = 0;
+          return;
+        }
+      }
+    }
+
     entity.y += entity.vy;
     entity.grounded = false;
 

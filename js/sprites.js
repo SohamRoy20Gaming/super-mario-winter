@@ -901,6 +901,38 @@ class SpriteEngine {
       this.cache['block_brick'] = canvas;
     }
 
+    // 5b. Frosted Stone / Pyramid Step Block (Staircase & Pyramid Blocks)
+    {
+      const { canvas, ctx } = this.createCanvas(TILE_SIZE, TILE_SIZE);
+      // Slate stone base
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
+
+      // Light bevel on top & left
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(0, 0, TILE_SIZE, 2);
+      ctx.fillRect(0, 0, 2, TILE_SIZE);
+
+      // Dark bevel on bottom & right
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, TILE_SIZE - 2, TILE_SIZE, 2);
+      ctx.fillRect(TILE_SIZE - 2, 0, 2, TILE_SIZE);
+
+      // Inner inset panel
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(3, 3, 10, 10);
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(4, 4, 8, 8);
+
+      // Snow cap on top
+      ctx.fillStyle = C.SNOW_WHITE;
+      ctx.fillRect(0, 0, TILE_SIZE, 2);
+      ctx.fillRect(2, 2, 3, 1);
+      ctx.fillRect(10, 2, 4, 1);
+
+      this.cache['block_step'] = canvas;
+    }
+
     // 6. Brick shard particle (for breaking animation)
     {
       const { canvas, ctx } = this.createCanvas(8, 8);

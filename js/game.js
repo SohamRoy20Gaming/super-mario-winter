@@ -365,6 +365,10 @@ class Engine {
         this.enemies.push(new Goomba(e.x, e.y));
       } else if (e.type === 'koopa') {
         this.enemies.push(new Koopa(e.x, e.y));
+      } else if (e.type === 'piranha') {
+        this.enemies.push(new PiranhaPlant(e.x, e.y));
+      } else if (e.type === 'frostbar') {
+        this.enemies.push(new FrostBar(e.x, e.y, e.length || 4, e.speed || 0.03, e.angle || 0));
       } else if (e.type === 'bowser') {
         this.enemies.push(new FrostBowser(e.x, e.y));
       }
@@ -376,9 +380,9 @@ class Engine {
   warpTo(targetWorldId) {
     if (targetWorldId === '1-1-return') {
       this.loadLevel('1-1');
-      this.player.x = 64 * 16;
-      this.player.y = 10 * 16;
-      this.cameraX = 55 * 16;
+      this.player.x = 98 * 16;
+      this.player.y = 8 * 16;
+      this.cameraX = 90 * 16;
     } else {
       this.loadLevel(targetWorldId);
     }
@@ -560,7 +564,9 @@ class Engine {
         } else if (
           this.player.vy > 0 &&
           this.player.y + this.player.h - this.player.vy <= e.y + 8 &&
-          e.type !== 'bowser'
+          e.type !== 'bowser' &&
+          e.type !== 'piranha' &&
+          e.type !== 'frostbar'
         ) {
           // Stomp on enemy head!
           e.stomp();
@@ -571,8 +577,8 @@ class Engine {
           // Kick dormant shell
           const kickDir = this.player.x < e.x ? 1 : -1;
           e.kick(kickDir);
-        } else {
-          // Mario takes damage
+        } else if (e.type !== 'frostbar') {
+          // Mario takes damage (frostbar handles damage in its own update)
           this.player.takeDamage();
         }
       }
@@ -631,6 +637,19 @@ class Engine {
 
   triggerCastleWin() {
     this.state = 'VICTORY';
+    // Collapse bridge tiles under Bowser
+    if (this.level) {
+      for (let r = 0; r < this.level.heightInTiles; r++) {
+        for (let c = 70; c < 120; c++) {
+          const tile = this.level.getTile(c, r);
+          if (tile && (tile.renderType === 'brick' || tile.renderType === 'step' || tile.isBridge)) {
+            tile.solid = false;
+            tile.renderType = null;
+            this.particles.addBrickShards(c * 16, r * 16);
+          }
+        }
+      }
+    }
     for (const e of this.enemies) {
       if (e.type === 'bowser') {
         e.defeat();

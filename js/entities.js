@@ -685,14 +685,32 @@ class PiranhaPlant {
     this.y = pipeY;
     this.w = 16;
     this.h = 24;
+    this.vx = 0;
+    this.vy = 0;
     this.state = 'rising'; // 'rising', 'waiting', 'sinking', 'hidden'
     this.timer = 0;
     this.type = 'piranha';
     this.isDead = false;
   }
 
+  flipDefeat() {
+    this.isDead = true;
+    this.vy = -4.5;
+    this.vx = 0.8;
+    Sound.playKick();
+  }
+
+  takeDamage() {
+    this.flipDefeat();
+  }
+
   update(level, player) {
-    if (this.isDead) return;
+    if (this.isDead) {
+      this.vy += Physics.GRAVITY;
+      this.y += this.vy;
+      this.x += this.vx;
+      return;
+    }
 
     // Do not emerge if player is too close to pipe
     const distToPlayer = Math.abs((player.x + player.w / 2) - (this.x + 8));
@@ -726,14 +744,86 @@ class PiranhaPlant {
   }
 
   render(ctx, cameraX) {
-    if (this.isDead || this.state === 'hidden') return;
+    if (this.state === 'hidden' && !this.isDead) return;
     const screenX = Math.floor(this.x - cameraX);
     const screenY = Math.floor(this.y);
 
     const sprite = Sprites.get('piranha_open');
     if (sprite) {
-      ctx.drawImage(sprite, screenX, screenY);
+      if (this.isDead) {
+        ctx.save();
+        ctx.translate(screenX + 8, screenY + 12);
+        ctx.scale(1, -1);
+        ctx.drawImage(sprite, -8, -12);
+        ctx.restore();
+      } else {
+        ctx.drawImage(sprite, screenX, screenY);
+      }
     }
+  }
+}
+
+// Rotating Frostbar Obstacle (Castle Firebar in ice theme)
+class FrostBar {
+  constructor(x, y, length = 4, speed = 0.03, startAngle = 0) {
+    this.x = x;
+    this.y = y;
+    this.length = length;
+    this.speed = speed;
+    this.angle = startAngle;
+    this.type = 'frostbar';
+    this.isDead = false;
+  }
+
+  update(level, player) {
+    this.angle += this.speed;
+
+    // Check collision along the bar with player
+    for (let i = 1; i <= this.length; i++) {
+      const dist = i * 8;
+      const bx = this.x + Math.cos(this.angle) * dist;
+      const by = this.y + Math.sin(this.angle) * dist;
+
+      if (
+        player.x < bx + 6 &&
+        player.x + player.w > bx - 6 &&
+        player.y < by + 6 &&
+        player.y + player.h > by - 6
+      ) {
+        player.takeDamage();
+        break;
+      }
+    }
+  }
+
+  render(ctx, cameraX) {
+    const screenCenterX = Math.floor(this.x - cameraX);
+    const screenCenterY = Math.floor(this.y);
+
+    ctx.save();
+    // Center stone pivot
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(screenCenterX - 3, screenCenterY - 3, 6, 6);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(screenCenterX - 1, screenCenterY - 1, 2, 2);
+
+    // Rotating frost fireballs
+    for (let i = 1; i <= this.length; i++) {
+      const dist = i * 8;
+      const bx = screenCenterX + Math.cos(this.angle) * dist;
+      const by = screenCenterY + Math.sin(this.angle) * dist;
+
+      ctx.fillStyle = '#48cae4';
+      ctx.beginPath();
+      ctx.arc(bx, by, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(bx, by, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 }
 

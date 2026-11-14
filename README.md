@@ -55,16 +55,35 @@ Open `index.html` directly in any modern browser (Chrome, Edge, Firefox, Safari)
 
 ---
 
-## 🗺️ World Tour (4 Stages)
+## 🗺️ World Tour (Authentic NES Walkthrough Layouts in Winter Theme)
 
 1. **World 1-1: Frosted Foothills**  
-   Classic overworld platforming through pine tree groves, snowmen, candy-cane pipes, and a secret underground coin vault!
+   Faithfully recreates the authentic Super Mario Bros 1-1 walkthrough layout:
+   - Iconic block arrangements (`?` blocks, Powerups, multi-coin bricks, and hidden 1-UP block).
+   - Candy-cane peppermint pipes with emerging Frost Piranha Plants.
+   - Enterable Pipe 4 leading to the underground **Secret Ice Vault** packed with 20 golden coins.
+   - Stepped stone pyramids (`E`), pit jumps, and the grand 8-step flagpole staircase!
+   - Peppermint flagpole with star finial, fireworks, and cozy log cabin.
+
 2. **World 1-2: Crystal Cavern**  
-   Underground ice cave with deep crystal blues, hanging icicles, slippery ice patches, and elevator platforms.
+   Subterranean ice cave featuring:
+   - Dropping entry pipe into deep crystal blue caverns.
+   - Single-tile stone pedestals across frozen pits, sliding Koopa shells, and piranha pipes.
+   - Breakable ceiling blocks leading to the high-speed roof running track.
+   - **The Secret Warp Zone**: Run along the ceiling past the normal exit pipe to access warp pipes leading forward to World 1-3, World 1-4, and bonus areas!
+
 3. **World 1-3: Alpine Treetops**  
-   High altitude athletic challenge with floating snow platforms, large gaps, and airborne Koopas.
+   High altitude athletic challenge:
+   - High suspended treetop mushroom canopies floating over bottomless icy chasms.
+   - Narrow precision platforming with patrolling Koopas and Goombas.
+   - Fast-paced momentum jumps, floating Starman power-ups, and treetop stepping pillars.
+
 4. **World 1-4: Bowser's Frost Keep**  
-   The frozen castle gauntlet! Avoid the freezing liquid abyss, dodge frost flames, and grab the Golden Axe to send Frost Bowser tumbling!
+   The climactic frozen fortress gauntlet:
+   - Dark castle stone walls, low ceilings, and freezing liquid nitrogen abyss (`L`).
+   - Rotating **Frostbars** (spinning ice fireballs) guarding narrow stone ledges.
+   - **Bowser's Grand Bridge Showdown**: Frost Bowser leaps and spits frost fireballs along the bridge!
+   - Leap past Bowser to touch the Golden Axe (`X`), triggering the bridge collapse and sending Bowser tumbling into the abyss!
 
 ---
 
