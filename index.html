@@ -50,6 +50,7 @@
         </div>
 
         <div class="cabinet-controls">
+          <button id="btn-autopilot" class="btn-icon btn-autopilot" title="AI Autopilot Mode" style="display: none;">🤖 AUTOPILOT: OFF</button>
           <button id="btn-pause" class="btn-icon" title="Pause / Resume Game (P)">⏸️ PAUSE</button>
           <button id="btn-reset" class="btn-icon btn-reset" title="Reset Game (keeps High Score)">🔄 RESET</button>
           <button id="btn-mute" class="btn-icon" title="Toggle Sound (M)">🔊 SOUND ON</button>
@@ -63,6 +64,7 @@
       <div class="screen-wrapper">
         <canvas id="gameCanvas"></canvas>
         <button id="btn-screen-pause" class="screen-pause-btn" aria-label="Pause Game" title="Pause Game (P)">⏸️</button>
+        <div id="cheat-toast" class="cheat-toast"></div>
         <div id="crt-overlay" class="crt-overlay"></div>
         <div class="crt-glare"></div>
       </div>
@@ -78,6 +80,10 @@
         </div>
 
         <div class="touch-center-controls">
+          <button id="btn-touch-autopilot" class="touch-pause-btn touch-autopilot-btn" aria-label="AI Autopilot" style="display: none;">
+            <span class="pause-icon">🤖</span>
+            <span class="pause-text">AUTO</span>
+          </button>
           <button id="btn-touch-pause" class="touch-pause-btn" aria-label="Pause / Resume Game">
             <span class="pause-icon">⏸️</span>
             <span class="pause-text">PAUSE</span>

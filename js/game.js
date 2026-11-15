@@ -60,6 +60,14 @@ class Engine {
     this.fireworkTimer = 0;
     this.animTick = 0;
 
+    // Autopilot & Cheat System
+    this.autopilot = false;
+    this.autopilotUnlocked = false;
+    this.cheatBuffer = '';
+    this.cheatToastTimer = 0;
+    this.cheatToastText = '';
+    this.autoJumpHold = 0;
+
     this.setupInputs();
     this.lastTime = performance.now();
   }
@@ -98,6 +106,23 @@ class Engine {
 
     window.addEventListener('keydown', (e) => {
       Sound.ensureContext();
+
+      // Secret Cheat Codes: IAMGAY (Instant Victory) & FATHEROFTHEGAME (Autopilot)
+      if (e.key && e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        this.cheatBuffer = (this.cheatBuffer + e.key.toUpperCase()).slice(-20);
+
+        if (this.cheatBuffer.endsWith('IAMGAY')) {
+          this.cheatBuffer = '';
+          this.winGameImmediately();
+          return;
+        }
+
+        if (this.cheatBuffer.endsWith('FATHEROFTHEGAME')) {
+          this.cheatBuffer = '';
+          this.unlockAutopilot();
+          return;
+        }
+      }
 
       if (e.code === 'KeyP' || e.code === 'Escape') {
         this.togglePause();
@@ -204,6 +229,26 @@ class Engine {
     if (btnTouchReset) {
       btnTouchReset.addEventListener('click', triggerReset);
       btnTouchReset.addEventListener('touchstart', triggerReset, { passive: false });
+    }
+
+    // Autopilot button handlers (revealed via FATHEROFTHEGAME cheat)
+    const triggerAutopilot = (e) => {
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
+      e?.currentTarget?.blur?.();
+      Sound.ensureContext();
+      this.toggleAutopilot();
+    };
+
+    const btnAutopilot = document.getElementById('btn-autopilot');
+    if (btnAutopilot) {
+      btnAutopilot.addEventListener('click', triggerAutopilot);
+    }
+
+    const btnTouchAutopilot = document.getElementById('btn-touch-autopilot');
+    if (btnTouchAutopilot) {
+      btnTouchAutopilot.addEventListener('click', triggerAutopilot);
+      btnTouchAutopilot.addEventListener('touchstart', triggerAutopilot, { passive: false });
     }
 
     // Mute button click
@@ -426,6 +471,191 @@ class Engine {
     this.particles.addSnowPuff(startX, startY, 3);
   }
 
+  // --- Secret Cheat Code & Autopilot Systems ---
+  winGameImmediately() {
+    Sound.ensureContext();
+    Sound.stopMusic();
+
+    if (this.state === 'TITLE' || !this.level) {
+      this.currentWorldId = '1-4';
+      this.loadLevel('1-4');
+    }
+
+    this.score += 50000;
+    if (this.score > this.highScore) {
+      this.highScore = this.score;
+      localStorage.setItem('mario_winter_hi', this.highScore.toString());
+    }
+
+    this.state = 'VICTORY';
+    Sound.playVictoryFanfare();
+    this.showCheatToast('🏆 CHEAT ACTIVATED: INSTANT VICTORY!');
+  }
+
+  unlockAutopilot() {
+    Sound.ensureContext();
+    Sound.playPowerupCollect();
+    this.autopilotUnlocked = true;
+
+    const btnAuto = document.getElementById('btn-autopilot');
+    if (btnAuto) {
+      btnAuto.style.display = 'inline-flex';
+    }
+    const btnTouchAuto = document.getElementById('btn-touch-autopilot');
+    if (btnTouchAuto) {
+      btnTouchAuto.style.display = 'flex';
+    }
+
+    this.showCheatToast('🤖 CHEAT ACTIVATED: AUTOPILOT UNLOCKED!');
+  }
+
+  toggleAutopilot() {
+    this.autopilot = !this.autopilot;
+
+    const btnAuto = document.getElementById('btn-autopilot');
+    if (btnAuto) {
+      btnAuto.textContent = this.autopilot ? '🤖 AUTOPILOT: ON' : '🤖 AUTOPILOT: OFF';
+      btnAuto.classList.toggle('active', this.autopilot);
+    }
+    const btnTouchAuto = document.getElementById('btn-touch-autopilot');
+    if (btnTouchAuto) {
+      btnTouchAuto.classList.toggle('active', this.autopilot);
+    }
+
+    if (this.autopilot) {
+      Sound.play1Up();
+      if (this.state === 'TITLE') {
+        this.startNewGame();
+      }
+      this.showCheatToast('🤖 AUTOPILOT: ENGAGED');
+    } else {
+      Sound.playBlockBump();
+      this.showCheatToast('🤖 AUTOPILOT: DISENGAGED');
+    }
+  }
+
+  showCheatToast(text) {
+    this.cheatToastText = text;
+    this.cheatToastTimer = 180; // 3 seconds at 60fps
+
+    const toastEl = document.getElementById('cheat-toast');
+    if (toastEl) {
+      toastEl.textContent = text;
+      toastEl.classList.add('show');
+      if (this.toastTimeout) clearTimeout(this.toastTimeout);
+      this.toastTimeout = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 3000);
+    }
+  }
+
+  updateAutopilot() {
+    if (!this.player || !this.level) return;
+
+    const p = this.player;
+
+    // Base continuous forward rush
+    this.input.left = false;
+    this.input.right = true;
+    this.input.run = true;
+    this.input.down = false;
+
+    const currentTileX = Math.floor(p.x / 16);
+    const footTileY = Math.floor((p.y + p.h - 1) / 16);
+    const belowTileY = footTileY + 1;
+
+    let shouldJump = false;
+
+    // 1. Obstacle Detection (Walls, pipes, pyramids, steps directly ahead)
+    for (let dx = 1; dx <= 3; dx++) {
+      const col = currentTileX + dx;
+      const tWaist = this.level.getTile(col, footTileY);
+      const tChest = this.level.getTile(col, footTileY - 1);
+      const tHead = this.level.getTile(col, footTileY - 2);
+      if ((tWaist && tWaist.solid) || (tChest && tChest.solid) || (tHead && tHead.solid)) {
+        shouldJump = true;
+        break;
+      }
+    }
+
+    // 2. Pit & Void Gap Detection ahead
+    let groundFound = false;
+    for (let dx = 1; dx <= 3; dx++) {
+      const col = currentTileX + dx;
+      const tBelow = this.level.getTile(col, belowTileY);
+      const tBelow2 = this.level.getTile(col, belowTileY + 1);
+      if ((tBelow && tBelow.solid && !tBelow.isLethal) || (tBelow2 && tBelow2.solid && !tBelow2.isLethal)) {
+        groundFound = true;
+        break;
+      }
+    }
+    if (!groundFound) {
+      shouldJump = true;
+    }
+
+    // 3. Enemy Avoidance & Combat
+    for (const e of this.enemies) {
+      if (e.isDead) continue;
+      const dist = e.x - p.x;
+      if (dist > -12 && dist < 72 && Math.abs(e.y - p.y) < 40) {
+        if (p.state === 'frost' && dist > 15) {
+          this.shootSnowball();
+        }
+        shouldJump = true;
+      }
+    }
+
+    // 4. World 1-2 Exit Pipe Navigation
+    if (this.currentWorldId === '1-2') {
+      const exitPipeX = 142 * 16;
+      if (Math.abs(p.x - exitPipeX) < 12 && p.y <= 9 * 16 + 4 && p.grounded) {
+        this.input.right = false;
+        this.input.down = true; // Enter down into pipe
+        return;
+      }
+    }
+
+    // 5. Goal / Flagpole Targeting (World 1-1 & World 1-3)
+    if (this.level.flagpole) {
+      const distToPole = this.level.flagpole.x - p.x;
+      if (distToPole > 0 && distToPole < 48) {
+        shouldJump = true; // High leap to catch flag top
+      }
+    }
+
+    // 6. Castle Bowser & Axe Capture (World 1-4)
+    if (this.level.axe) {
+      const distToAxe = this.level.axe.x - p.x;
+      if (distToAxe > 0 && distToAxe < 100) {
+        shouldJump = true; // Leap over Bowser and land on Axe
+      }
+    }
+
+    // 7. Stuck / Blocked Detection
+    if (p.grounded && Math.abs(p.vx) < 0.2) {
+      shouldJump = true;
+    }
+
+    // Apply Jump Key (with safety release cycle to re-prime jump button)
+    if (shouldJump) {
+      if (!this.autoJumpHold) this.autoJumpHold = 0;
+      this.autoJumpHold++;
+      this.input.jump = this.autoJumpHold < 18;
+      if (this.autoJumpHold > 22) {
+        this.autoJumpHold = 0;
+      }
+    } else {
+      this.autoJumpHold = 0;
+      this.input.jump = false;
+    }
+
+    // Fall safety recovery
+    if (p.y > this.level.pixelHeight + 10) {
+      p.y = 12 * 16;
+      p.vy = -7.5;
+    }
+  }
+
   // --- Main Update Loop ---
   update() {
     if (this.state === 'INTRO') {
@@ -450,6 +680,11 @@ class Engine {
       if (this.timeLeft === 0 && !this.player.isDead) {
         this.player.die();
       }
+    }
+
+    // Autopilot AI control
+    if (this.autopilot && this.state === 'PLAYING' && this.player && !this.player.isDead) {
+      this.updateAutopilot();
     }
 
     // Check shoot snowball
@@ -821,7 +1056,29 @@ class Engine {
     const timeStr = this.timeLeft.toString().padStart(3, '0');
     this.ctx.fillText(timeStr, 264, 28);
 
+    // Autopilot Active Indicator
+    if (this.autopilot) {
+      this.ctx.fillStyle = (Math.floor(Date.now() / 250) % 2 === 0) ? '#34d399' : '#059669';
+      this.ctx.fillText('🤖 AUTO AI', 188, 16);
+    }
+
     this.ctx.restore();
+
+    // Retro Canvas Cheat Toast Overlay
+    if (this.cheatToastTimer > 0) {
+      this.cheatToastTimer--;
+      this.ctx.save();
+      this.ctx.fillStyle = 'rgba(10, 17, 40, 0.92)';
+      this.ctx.fillRect(20, 36, 280, 24);
+      this.ctx.strokeStyle = '#38bdf8';
+      this.ctx.lineWidth = 1;
+      this.ctx.strokeRect(20, 36, 280, 24);
+      this.ctx.font = '7px "SuperMarioNES", "Press Start 2P", monospace';
+      this.ctx.fillStyle = '#ffbe0b';
+      this.ctx.textAlign = 'center';
+      this.ctx.fillText(this.cheatToastText, 160, 51);
+      this.ctx.restore();
+    }
   }
 
   renderTitleScreen() {

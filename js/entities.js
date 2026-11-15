@@ -246,6 +246,12 @@ class Mario {
   takeDamage() {
     if (this.invulnerableTimer > 0 || this.isDead || this.starTimer > 0) return;
 
+    if (window.GameEngine?.autopilot) {
+      this.invulnerableTimer = 120;
+      Sound.playBlockBump();
+      return;
+    }
+
     if (this.isSuper) {
       this.state = 'small';
       this.h = 16;
