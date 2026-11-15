@@ -50,8 +50,8 @@ Open `index.html` directly in any modern browser (Chrome, Edge, Firefox, Safari)
 - **Holiday Star**: Golden five-pointed Christmas star granting temporary invincibility, speed boost, and rainbow sparkling trails!
 
 ### 4. 🏰 End of Stage Celebrations
-- **Festive Flagpole**: Peppermint-striped flagpole with a golden star on top.
-- **Cozy Log Cabin**: When Mario slides down the flagpole, he strolls into the warm log cabin while colorful fireworks light up the winter sky!
+- **Festive Flagpole & Sliding Holiday Flag**: Peppermint-striped flagpole with a golden star finial and an authentic NES-style triangular holiday flag featuring an 8-pointed snowflake emblem. The flag gently flutters in the winter wind and glides smoothly down the pole in sync with Mario when he touches the pole, awarding bonus score based on height!
+- **Cozy Log Cabin**: When Mario slides down the flagpole, he hops to the right and strolls into the warm glowing log cabin while colorful fireworks light up the winter sky!
 
 ---
 

@@ -624,6 +624,24 @@ class Engine {
     this.player.onPole = true;
     this.player.vx = 0;
     this.player.vy = 0;
+
+    if (this.level.flagpole) {
+      this.player.x = this.level.flagpole.x - 8;
+      this.level.flagpole.isSliding = true;
+
+      // Authentic NES flagpole height score bonus
+      const poleHeight = Math.max(16, this.level.flagpole.botY - this.level.flagpole.topY);
+      const hitDistFromTop = Math.max(0, this.player.y - this.level.flagpole.topY);
+      const heightPercent = 1 - (hitDistFromTop / poleHeight);
+      let pts = 100;
+      if (heightPercent >= 0.85) pts = 5000;
+      else if (heightPercent >= 0.65) pts = 2000;
+      else if (heightPercent >= 0.40) pts = 800;
+      else if (heightPercent >= 0.20) pts = 400;
+      this.addScore(pts);
+      this.particles.addScoreText(this.player.x, this.player.y, pts.toString());
+    }
+
     Sound.playFlagpole();
     setTimeout(() => {
       Sound.playVictoryFanfare();

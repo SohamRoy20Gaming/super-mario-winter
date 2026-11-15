@@ -173,7 +173,13 @@ class Level {
         return baseTile;
       case 'F': // Flagpole
         if (!this.flagpole) {
-          this.flagpole = { x: x + 6, topY: y, botY: y + 16 };
+          this.flagpole = {
+            x: x + 6,
+            topY: y,
+            botY: y + 16,
+            flagY: y + 2,
+            isSliding: false
+          };
         }
         this.flagpole.botY = y + 16;
         this.flagBaseY = y + 16;
@@ -303,6 +309,17 @@ class Level {
         }
       }
     }
+
+    // Flag sliding down flagpole
+    if (this.flagpole && (this.flagpole.isSliding || this.getEngine()?.player?.onPole)) {
+      const targetFlagY = this.flagpole.botY - 16;
+      if (this.flagpole.flagY < targetFlagY) {
+        this.flagpole.flagY += 2.0;
+        if (this.flagpole.flagY > targetFlagY) {
+          this.flagpole.flagY = targetFlagY;
+        }
+      }
+    }
   }
 
   render(ctx, cameraX, viewportW, viewportH, coinFrame = 0) {
@@ -329,16 +346,27 @@ class Level {
       }
     }
 
-    // Draw Flagpole
+    // Draw Flagpole & Animated Flag
     if (this.flagpole) {
       const screenX = Math.floor(this.flagpole.x - cameraX);
-      if (screenX >= -20 && screenX <= viewportW + 20) {
+      if (screenX >= -32 && screenX <= viewportW + 32) {
         // Striped pole
         for (let y = this.flagpole.topY; y < this.flagpole.botY; y += 8) {
           ctx.fillStyle = (y / 8) % 2 === 0 ? '#e63946' : '#ffffff';
           ctx.fillRect(screenX, y, 4, 8);
         }
-        // Gold Star on top
+
+        // Draw Flag attached to pole
+        const flagY = Math.floor(this.flagpole.flagY !== undefined ? this.flagpole.flagY : (this.flagpole.topY + 2));
+        const flagSprite = (!this.flagpole.isSliding && flagY <= this.flagpole.topY + 4)
+          ? (Sprites.get('flagpole_flag_' + (Math.floor(Date.now() / 250) % 2)) || Sprites.get('flagpole_flag'))
+          : Sprites.get('flagpole_flag');
+
+        if (flagSprite) {
+          ctx.drawImage(flagSprite, screenX - 16, flagY);
+        }
+
+        // Gold Star on top of pole
         const starSprite = Sprites.get('flagpole_star');
         if (starSprite) {
           ctx.drawImage(starSprite, screenX - 6, this.flagpole.topY - 14);

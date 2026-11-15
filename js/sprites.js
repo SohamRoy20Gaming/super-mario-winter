@@ -1401,7 +1401,7 @@ class SpriteEngine {
       this.cache['scenery_cabin'] = canvas;
     }
 
-    // 4. Festive Flagpole & Star
+    // 4. Festive Flagpole, Star & Animated Flag
     {
       // Star finial
       const { canvas, ctx } = this.createCanvas(16, 16);
@@ -1412,6 +1412,67 @@ class SpriteEngine {
       ctx.fillStyle = C.SNOW_WHITE;
       ctx.fillRect(6, 6, 2, 2);
       this.cache['flagpole_star'] = canvas;
+
+      // Authentic NES-Style Holiday Flag (16x16 emerald pine pennant with snowflake emblem)
+      const flagPalette = {
+        'W': '#ffffff', // Snow White & Emblem
+        'L': '#74c69d', // Frosted Pine Highlight
+        'G': '#2d6a4f', // Emerald Pine Green
+        'D': '#1b4332', // Deep Shade Pine Green
+        'O': '#ffb703'  // Brass Hoist Ring / Clip
+      };
+
+      // Frame 0: Standard crisp triangular pennant
+      const flagMatrix0 = [
+        "WWLLLLLLLLLLLLLO",
+        ".GGGGGGGGGGGGGGG",
+        "..GGGGGGGGWGGGGG",
+        "...GGGGGWGWGWGGG",
+        "....GGGGGWWWWGGD",
+        ".....GWWWWWWWWGD",
+        "......GGGGWWWGDD",
+        ".......GGWGWGWDD",
+        "........GGWGGDDD",
+        ".........GGDDDDD",
+        "..........GDDDDD",
+        "...........DDDDD",
+        "............DDDD",
+        ".............DDD",
+        "..............DO",
+        "...............D"
+      ];
+
+      // Frame 1: Gentle winter breeze wave ripple
+      const flagMatrix1 = [
+        ".LLLLLLLLLLLLLLO",
+        "WGGGGGGGGGGGGGGG",
+        "..GGGGGGGGWGGGGG",
+        "...GGGGGWGWGWGGG",
+        "....GGGGGWWWWGGD",
+        ".....GWWWWWWWWGD",
+        "......GGGGWWWGDD",
+        ".......GGWGWGWDD",
+        "........GGWGGDDD",
+        ".........GGDDDDD",
+        "..........GDDDDD",
+        "...........DDDDD",
+        "............DDDD",
+        ".............DDD",
+        "..............DO",
+        "...............D"
+      ];
+
+      const makeFlag = (mat) => {
+        const { canvas: fCanvas, ctx: fCtx } = this.createCanvas(16, 16);
+        this.drawMatrix(fCtx, mat, flagPalette);
+        return fCanvas;
+      };
+
+      const flag0 = makeFlag(flagMatrix0);
+      const flag1 = makeFlag(flagMatrix1);
+      this.cache['flagpole_flag'] = flag0;
+      this.cache['flagpole_flag_0'] = flag0;
+      this.cache['flagpole_flag_1'] = flag1;
     }
   }
 

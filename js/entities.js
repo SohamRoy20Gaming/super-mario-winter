@@ -279,6 +279,10 @@ class Mario {
       if (this.y >= level.flagBaseY - this.h) {
         this.y = level.flagBaseY - this.h;
         this.onPole = false;
+        if (level.flagpole) {
+          this.x = level.flagpole.x + 8;
+        }
+        this.facing = 1;
         this.reachCabin = true;
       }
       return;
