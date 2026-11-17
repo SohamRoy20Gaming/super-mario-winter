@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Super Mario Winter - The Holiday Adventure</title>
-  <meta name="description" content="Play Classic Super Mario reimagined in a magical winter world! Explore 4 snowy stages, throw snowballs as Frost Mario, and jam to festive jingle-bell chiptunes.">
-  <link rel="canonical" href="https://sohamroy20gaming.github.io/super-mario-winter/">
-  <meta itemprop="image" content="https://sohamroy20gaming.github.io/super-mario-winter/preview.jpg">
+  <meta name="description"
+    content="Play Classic Super Mario reimagined in a magical winter world! Explore 4 snowy stages, throw snowballs as Frost Mario, and jam to festive jingle-bell chiptunes.">
+  <link rel="canonical" href="https://super-mario-winter.vercel.app/">
+  <meta itemprop="image" content="https://super-mario-winter.vercel.app/images/preview.jpg">
 
   <!-- Open Graph / WhatsApp / Telegram Link Preview -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://sohamroy20gaming.github.io/super-mario-winter/">
+  <meta property="og:url" content="https://super-mario-winter.vercel.app/">
   <meta property="og:site_name" content="Super Mario Winter">
   <meta property="og:title" content="Super Mario Winter - The Holiday Adventure">
-  <meta property="og:description" content="Play Classic Super Mario reimagined in a magical winter world! Explore 4 snowy stages, throw snowballs as Frost Mario, and jam to festive jingle-bell chiptunes.">
-  <meta property="og:image" content="https://sohamroy20gaming.github.io/super-mario-winter/preview.jpg">
-  <meta property="og:image:secure_url" content="https://sohamroy20gaming.github.io/super-mario-winter/preview.jpg">
+  <meta property="og:description"
+    content="Play Classic Super Mario reimagined in a magical winter world! Explore 4 snowy stages, throw snowballs as Frost Mario, and jam to festive jingle-bell chiptunes.">
+  <meta property="og:image" content="https://super-mario-winter.vercel.app/images/preview.jpg">
+  <meta property="og:image:secure_url" content="https://super-mario-winter.vercel.app/images/preview.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:alt" content="Super Mario Winter - The Holiday Adventure">
 
   <!-- Twitter / X Large Preview Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Super Mario Winter - The Holiday Adventure">
-  <meta name="twitter:description" content="Play Classic Super Mario reimagined in a magical winter world! Explore 4 snowy stages, throw snowballs as Frost Mario, and jam to festive jingle-bell chiptunes.">
-  <meta name="twitter:image" content="https://sohamroy20gaming.github.io/super-mario-winter/preview.jpg">
+  <meta name="twitter:description"
+    content="Play Classic Super Mario reimagined in a magical winter world! Explore 4 snowy stages, throw snowballs as Frost Mario, and jam to festive jingle-bell chiptunes.">
+  <meta name="twitter:image" content="https://super-mario-winter.vercel.app/images/preview.jpg">
 
   <link rel="preload" href="Super_Mario_Bros._NES.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/favicon.png">
 </head>
+
 <body>
 
   <!-- Ambient background snow canvas -->
@@ -38,11 +43,11 @@
   <div class="game-container">
     <!-- Arcade Cabinet Bezel -->
     <div class="cabinet-bezel">
-      
+
       <!-- Top Marquee Header -->
       <div class="bezel-header">
         <div class="brand-badge">
-          <img src="favicon.png" alt="Super Mario Winter" class="brand-icon">
+          <img src="images/favicon.png" alt="Super Mario Winter" class="brand-icon">
           <div>
             <div class="brand-title">SUPER MARIO WINTER</div>
             <div class="brand-subtitle">The Holiday Adventure</div>
@@ -50,7 +55,8 @@
         </div>
 
         <div class="cabinet-controls">
-          <button id="btn-autopilot" class="btn-icon btn-autopilot" title="AI Autopilot Mode" style="display: none;">🤖 AUTOPILOT: OFF</button>
+          <button id="btn-autopilot" class="btn-icon btn-autopilot" title="AI Autopilot Mode" style="display: none;">🤖
+            AUTOPILOT: OFF</button>
           <button id="btn-pause" class="btn-icon" title="Pause / Resume Game (P)">⏸️ PAUSE</button>
           <button id="btn-reset" class="btn-icon btn-reset" title="Reset Game (keeps High Score)">🔄 RESET</button>
           <button id="btn-mute" class="btn-icon" title="Toggle Sound (M)">🔊 SOUND ON</button>
@@ -63,7 +69,8 @@
       <!-- Canvas Screen & CRT Filter -->
       <div class="screen-wrapper">
         <canvas id="gameCanvas"></canvas>
-        <button id="btn-screen-pause" class="screen-pause-btn" aria-label="Pause Game" title="Pause Game (P)">⏸️</button>
+        <button id="btn-screen-pause" class="screen-pause-btn" aria-label="Pause Game"
+          title="Pause Game (P)">⏸️</button>
         <div id="cheat-toast" class="cheat-toast"></div>
         <div id="crt-overlay" class="crt-overlay"></div>
         <div class="crt-glare"></div>
@@ -80,7 +87,8 @@
         </div>
 
         <div class="touch-center-controls">
-          <button id="btn-touch-autopilot" class="touch-pause-btn touch-autopilot-btn" aria-label="AI Autopilot" style="display: none;">
+          <button id="btn-touch-autopilot" class="touch-pause-btn touch-autopilot-btn" aria-label="AI Autopilot"
+            style="display: none;">
             <span class="pause-icon">🤖</span>
             <span class="pause-text">AUTO</span>
           </button>
@@ -109,7 +117,8 @@
       <!-- Keyboard Controls Quick Guide -->
       <div class="controls-guide">
         <div class="guide-item">
-          <span class="key-tag">◀</span><span class="key-tag">▶</span> or <span class="key-tag">A</span><span class="key-tag">D</span> Walk
+          <span class="key-tag">◀</span><span class="key-tag">▶</span> or <span class="key-tag">A</span><span
+            class="key-tag">D</span> Walk
         </div>
         <div class="guide-item">
           <span class="key-tag">SPACE</span> or <span class="key-tag">W</span> Jump
@@ -144,17 +153,25 @@
       </div>
       <div class="modal-content">
         <p><strong>Welcome to the Winter Kingdom!</strong></p>
-        <p>Guide Cozy Mario through 4 handcrafted snowy stages, defeat Frost Bowser, and bring warmth back to the realm!</p>
-        
+        <p>Guide Cozy Mario through 4 handcrafted snowy stages, defeat Frost Bowser, and bring warmth back to the realm!
+        </p>
+
         <ul>
-          <li><strong>Movement:</strong> Use <span class="key-tag">Arrow Keys</span> or <span class="key-tag">WASD</span>. Hold <span class="key-tag">Shift</span> or <span class="key-tag">X</span> to run fast and skid across the snow!</li>
-          <li><strong>Variable Jump:</strong> Tap <span class="key-tag">Space</span> for a hop, or hold it down for a mighty high leap!</li>
+          <li><strong>Movement:</strong> Use <span class="key-tag">Arrow Keys</span> or <span
+              class="key-tag">WASD</span>. Hold <span class="key-tag">Shift</span> or <span class="key-tag">X</span> to
+            run fast and skid across the snow!</li>
+          <li><strong>Variable Jump:</strong> Tap <span class="key-tag">Space</span> for a hop, or hold it down for a
+            mighty high leap!</li>
           <li><strong>Gift '?' Blocks:</strong> Hit them from below to unwrap coins, mushrooms, and frost flowers.</li>
           <li><strong>Snow Goombas:</strong> Stomp them to squish their earmuffs!</li>
-          <li><strong>Frost Koopas:</strong> Stomp into their ice shells, then run into them to kick and bowl over lines of enemies!</li>
-          <li><strong>Candy-Cane Pipes:</strong> Stand on certain striped pipes and press <span class="key-tag">Down</span> to enter hidden ice caverns!</li>
-          <li><strong>Frost Flower:</strong> Collect the ice flower to throw bouncing snowballs with <span class="key-tag">Shift</span> / <span class="key-tag">X</span>!</li>
-          <li><strong>Festive Flagpole:</strong> Slide down the holiday flagpole and flag to set off victory fireworks and warm up in the cozy cabin!</li>
+          <li><strong>Frost Koopas:</strong> Stomp into their ice shells, then run into them to kick and bowl over lines
+            of enemies!</li>
+          <li><strong>Candy-Cane Pipes:</strong> Stand on certain striped pipes and press <span
+              class="key-tag">Down</span> to enter hidden ice caverns!</li>
+          <li><strong>Frost Flower:</strong> Collect the ice flower to throw bouncing snowballs with <span
+              class="key-tag">Shift</span> / <span class="key-tag">X</span>!</li>
+          <li><strong>Festive Flagpole:</strong> Slide down the holiday flagpole and flag to set off victory fireworks
+            and warm up in the cozy cabin!</li>
         </ul>
       </div>
       <button id="modal-close-btn" class="modal-close">LET'S PLAY!</button>
@@ -163,7 +180,7 @@
 
   <!-- Ambient Snow Script -->
   <script>
-    (function() {
+    (function () {
       const canvas = document.getElementById('ambient-snow');
       const ctx = canvas.getContext('2d');
       let w = canvas.width = window.innerWidth;
@@ -281,4 +298,5 @@
   <script src="js/game.js"></script>
 
 </body>
+
 </html>
