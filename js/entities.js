@@ -254,6 +254,7 @@ class Mario {
 
     if (this.isSuper) {
       this.state = 'small';
+      this.y += 16;
       this.h = 16;
       this.invulnerableTimer = 120; // 2 seconds flashing grace
       Sound.playBlockBump();

@@ -165,7 +165,7 @@ class SpriteEngine {
       "...BBBWBBB......",
       "..FFFB.BFFF.....",
       "..FFFF.FFFF.....",
-      "................"
+      "..FFFF.FFFF....."
     ];
 
     // Small Mario Walk 1
@@ -185,7 +185,7 @@ class SpriteEngine {
       "....BBBB........",
       "...FFFF.........",
       "...FFFFF........",
-      "................"
+      "...FFFFF........"
     ];
 
     // Small Mario Walk 2
@@ -205,7 +205,7 @@ class SpriteEngine {
       "...BB...BB......",
       "..FFFF...FFF....",
       "..FFFFF..FFFF...",
-      "................"
+      "..FFFFF..FFFF..."
     ];
 
     // Small Mario Jump
@@ -225,7 +225,7 @@ class SpriteEngine {
       "...BBBBBBB......",
       "..FFFF.FFFF.....",
       ".FFFF...FFFF....",
-      "................"
+      ".FFFF...FFFF...."
     ];
 
     // Small Mario Skid
@@ -245,7 +245,7 @@ class SpriteEngine {
       "...BBBB.B.......",
       "..FFFF.FFFF.....",
       "........FFF.....",
-      "................"
+      "........FFF....."
     ];
 
     // Small Mario Die
@@ -303,10 +303,12 @@ class SpriteEngine {
       "....HSHHSSSH....",
       "....HSSSSHH.....",
       ".....SSSSSS.....",
+      ".....SSSSSS.....",
       "....WWWWWWWW....",
       "...WRRRRWRRRW...",
       "...WRRRRWRRRW...",
       "..GWRRRRWRRRWG..",
+      "..G.RRRRRRRR.G..",
       "..G.RRRRRRRR.G..",
       "....RRRRRRRR....",
       "....RRRRRRRR....",
@@ -314,18 +316,16 @@ class SpriteEngine {
       "....WWWWWWWW....",
       "....BBBBBBBB....",
       "....BBBBBBBB....",
+      "....BBBBBBBB....",
+      "...BBBB..BBBB...",
+      "...BBBB..BBBB...",
       "...BBBB..BBBB...",
       "...BBBB..BBBB...",
       "...BBBB..BBBB...",
       "..FFFFF..FFFFF..",
       "..FFFFF..FFFFF..",
       "..FFFFF..FFFFF..",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................"
+      "..FFFFF..FFFFF.."
     ];
 
     const superWalk1 = [
@@ -338,29 +338,29 @@ class SpriteEngine {
       "....HSHHSSSH....",
       "....HSSSSHH.....",
       ".....SSSSSS.....",
+      ".....SSSSSS.....",
       "....WWWWWWWW....",
       "...WRRRRWRRRW...",
       "..GWRRRRWRRRW...",
       "..G.RRRRRRRR....",
+      "..G.RRRRRRRR....",
       "....RRRRRRRR.G..",
       "....RRRRRRRR.G..",
+      "....RRRRRRRR....",
       "....RRRRRRRR....",
       "....WWWWWWWW....",
       "....BBBBBBBB....",
       "....BBBBBBBB....",
+      "....BBBBBBBB....",
+      "....BBBB..BBB...",
+      "....BBBB...BB...",
       "....BBBB........",
+      "...BBBBB........",
       "...BBBBB........",
       "..FFFFFF........",
       "..FFFFFF........",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................"
+      "..FFFFFF........",
+      "..FFFFFF........"
     ];
 
     const superWalk2 = [
@@ -373,29 +373,29 @@ class SpriteEngine {
       "....HSHHSSSH....",
       "....HSSSSHH.....",
       ".....SSSSSS.....",
+      ".....SSSSSS.....",
       "....WWWWWWWW....",
       "...WRRRRWRRRW...",
       "...WRRRRWRRRWG..",
       "....RRRRRRRR.G..",
+      "....RRRRRRRR.G..",
       "..G.RRRRRRRR....",
       "..G.RRRRRRRR....",
       "....RRRRRRRR....",
+      "....RRRRRRRR....",
       "....WWWWWWWW....",
       "....BBBBBBBB....",
+      "....BBBBBBBB....",
+      "...BBBB..BBBB...",
       "...BBBB..BBBB...",
       "..BBBB....BBBB..",
-      "..FFFF....FFFF..",
-      ".FFFFF....FFFFF.",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................"
+      "..BBBB....BBBB..",
+      ".BBBB......BBBB.",
+      ".BBBB......BBBB.",
+      ".FFFF......FFFF.",
+      ".FFFF......FFFF.",
+      "FFFFF......FFFFF",
+      "FFFFF......FFFFF"
     ];
 
     const superJump = [
@@ -408,6 +408,7 @@ class SpriteEngine {
       "....HSHHSSSH....",
       "....HSSSSHH.....",
       ".....SSSSSS.....",
+      ".....SSSSSS.....",
       "....WWWWWWWW....",
       "..GWRRRRWRRRW...",
       "..GWRRRRWRRRW...",
@@ -415,25 +416,28 @@ class SpriteEngine {
       "....RRRRRRRR.G..",
       "....RRRRRRRR.G..",
       "....RRRRRRRR....",
+      "....RRRRRRRR....",
+      "....RRRRRRRR....",
       "....WWWWWWWW....",
       "...BBBBBBBB.....",
+      "...BBBBBBBB.....",
       "..BBBB..BBBB....",
-      "..FFFF..FFFF....",
-      ".FFFFF...FFFF...",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................"
+      "..BBBB..BBBB....",
+      "..BBBB...BBBB...",
+      "..BBBB...BBBB...",
+      ".BBBBB...BBBBB..",
+      ".BBBBB...BBBBB..",
+      ".FFFF.....FFFF..",
+      ".FFFF.....FFFF..",
+      ".FFFFF...FFFFF..",
+      ".FFFFF...FFFFF.."
     ];
 
     const superCrouch = [
+      "................",
+      "................",
+      "................",
+      "................",
       "................",
       "................",
       "................",
@@ -453,19 +457,15 @@ class SpriteEngine {
       "...WRRRRWRRRW...",
       "..GWRRRRWRRRWG..",
       "..G.RRRRRRRR.G..",
+      "....RRRRRRRR....",
       "....WWWWWWWW....",
+      "....BBBBBBBB....",
       "....BBBBBBBB....",
       "..FFFFFFFFFFFF..",
       "..FFFFFFFFFFFF..",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................"
+      "..FFFFFFFFFFFF..",
+      "..FFFFFFFFFFFF..",
+      "..FFFFFFFFFFFF.."
     ];
 
     const makeSuper = (matrix, customPalette = superPalette) => {
