@@ -287,6 +287,7 @@ class Engine {
 
       el.addEventListener('touchstart', triggerStart, { passive: false });
       el.addEventListener('touchend', triggerEnd, { passive: false });
+      el.addEventListener('touchcancel', triggerEnd, { passive: false });
       el.addEventListener('mousedown', triggerStart);
       el.addEventListener('mouseup', triggerEnd);
       el.addEventListener('mouseleave', triggerEnd);

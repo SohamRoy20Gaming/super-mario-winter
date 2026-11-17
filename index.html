@@ -78,20 +78,7 @@
 
       <!-- Touch Controls (Mobile / Tablet friendly) -->
       <div class="touch-controls">
-        <div class="d-pad">
-          <button class="d-btn d-up" id="btn-up">▲</button>
-          <button class="d-btn d-left" id="btn-left">◀</button>
-          <div class="d-center"></div>
-          <button class="d-btn d-right" id="btn-right">▶</button>
-          <button class="d-btn d-down" id="btn-down">▼</button>
-        </div>
-
-        <div class="touch-center-controls">
-          <button id="btn-touch-autopilot" class="touch-pause-btn touch-autopilot-btn" aria-label="AI Autopilot"
-            style="display: none;">
-            <span class="pause-icon">🤖</span>
-            <span class="pause-text">AUTO</span>
-          </button>
+        <div class="touch-meta-bar">
           <button id="btn-touch-pause" class="touch-pause-btn" aria-label="Pause / Resume Game">
             <span class="pause-icon">⏸️</span>
             <span class="pause-text">PAUSE</span>
@@ -100,17 +87,32 @@
             <span class="pause-icon">🔄</span>
             <span class="pause-text">RESET</span>
           </button>
+          <button id="btn-touch-autopilot" class="touch-pause-btn touch-autopilot-btn" aria-label="AI Autopilot"
+            style="display: none;">
+            <span class="pause-icon">🤖</span>
+            <span class="pause-text">AUTO</span>
+          </button>
         </div>
 
-        <div class="action-buttons">
-          <button class="action-btn btn-b" id="btn-action">
-            B
-            <small>RUN/ICE</small>
-          </button>
-          <button class="action-btn btn-a" id="btn-jump">
-            A
-            <small>JUMP</small>
-          </button>
+        <div class="touch-gamepad-row">
+          <div class="d-pad">
+            <button class="d-btn d-up" id="btn-up" aria-label="Up">▲</button>
+            <button class="d-btn d-left" id="btn-left" aria-label="Left">◀</button>
+            <div class="d-center"></div>
+            <button class="d-btn d-right" id="btn-right" aria-label="Right">▶</button>
+            <button class="d-btn d-down" id="btn-down" aria-label="Down">▼</button>
+          </div>
+
+          <div class="action-buttons">
+            <button class="action-btn btn-b" id="btn-action" aria-label="Run and Shoot">
+              B
+              <small>RUN/ICE</small>
+            </button>
+            <button class="action-btn btn-a" id="btn-jump" aria-label="Jump">
+              A
+              <small>JUMP</small>
+            </button>
+          </div>
         </div>
       </div>
 
