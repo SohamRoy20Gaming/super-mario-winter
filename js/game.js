@@ -175,8 +175,8 @@ class Engine {
       }
     });
 
-    // Canvas click to start or unpause
-    this.canvas.addEventListener('click', () => {
+    // Canvas click / touch to start or unpause
+    const handleCanvasTap = (e) => {
       Sound.ensureContext();
       if (this.state === 'PAUSED') {
         this.togglePause();
@@ -185,7 +185,15 @@ class Engine {
       } else if (this.state === 'GAMEOVER' || this.state === 'VICTORY') {
         this.state = 'TITLE';
       }
-    });
+    };
+
+    this.canvas.addEventListener('click', handleCanvasTap);
+    this.canvas.addEventListener('touchstart', (e) => {
+      if (this.state === 'TITLE' || this.state === 'PAUSED' || this.state === 'GAMEOVER' || this.state === 'VICTORY') {
+        e.preventDefault();
+        handleCanvasTap(e);
+      }
+    }, { passive: false });
 
     // Pause button handlers (mobile on-screen, mobile touch-bar, and marquee)
     const triggerPause = (e) => {
@@ -299,6 +307,8 @@ class Engine {
     bindTouch('btn-down', 'down');
     bindTouch('btn-jump', 'jump');
     bindTouch('btn-action', 'run');
+    bindTouch('btn-a', 'jump');
+    bindTouch('btn-b', 'run');
   }
 
   togglePause() {
